@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>薪资管理 - 综合人力资源信息处理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            /* 移除底部padding */
+            padding-bottom: 0;
+        }
+
+        .status-bar {
+            height: 24px;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 12px;
+            align-items: center;
+        }
+
+        .header {
+            background: #1565c0;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+        }
+
+        .salary-card {
+            background: white;
+            margin: 15px;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .month-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .month-text {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .total-salary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .salary-amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1565c0;
+            margin: 10px 0;
+        }
+
+        .salary-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .salary-detail {
+            background: white;
+            margin: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .detail-header {
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-label {
+            color: #666;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .detail-value.plus {
+            color: #2e7d32;
+        }
+
+        .detail-value.minus {
+            color: #c62828;
+        }
+
+        .chart-card {
+            background: white;
+            margin: 15px;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .chart-container {
+            height: 200px;
+        }
+
+        .insurance-card {
+            background: white;
+            margin: 15px;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .insurance-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .insurance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .insurance-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .insurance-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .insurance-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .nav-item.active {
+            color: #1565c0;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="header">
+        <a href="home.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <span>薪资管理</span>
+        <i class="fas fa-ellipsis-v"></i>
+    </div>
+
+    <div class="salary-card">
+        <div class="month-selector">
+            <button class="month-btn" id="prevMonth">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="current-month" id="currentMonth">2024年03月</span>
+            <button class="month-btn" id="nextMonth">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="total-salary">
+            <div class="salary-label">税后工资</div>
+            <div class="salary-amount">¥15,800.00</div>
+            <div class="salary-label">实发日期：2024-03-15</div>
+        </div>
+    </div>
+
+    <div class="salary-detail">
+        <div class="detail-header">工资明细</div>
+        <div class="detail-item">
+            <span class="detail-label">基本工资</span>
+            <span class="detail-value plus">¥12,000.00</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">绩效奖金</span>
+            <span class="detail-value plus">¥3,000.00</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">加班工资</span>
+            <span class="detail-value plus">¥800.00</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">社保个人部分</span>
+            <span class="detail-value minus">-¥1,200.00</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">公积金个人部分</span>
+            <span class="detail-value minus">-¥600.00</span>
+        </div>
+        <div class="detail-item">
+            <span class="detail-label">个人所得税</span>
+            <span class="detail-value minus">-¥800.00</span>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-title">近6个月薪资趋势</div>
+        <div id="salaryChart" class="chart-container"></div>
+    </div>
+
+    <div class="insurance-card">
+        <div class="insurance-title">社保公积金</div>
+        <div class="insurance-grid">
+            <div class="insurance-item">
+                <div class="insurance-label">社保基数</div>
+                <div class="insurance-value">¥10,000</div>
+            </div>
+            <div class="insurance-item">
+                <div class="insurance-label">公积金基数</div>
+                <div class="insurance-value">¥10,000</div>
+            </div>
+            <div class="insurance-item">
+                <div class="insurance-label">社保个人缴纳</div>
+                <div class="insurance-value">¥1,200</div>
+            </div>
+            <div class="insurance-item">
+                <div class="insurance-label">公积金个人缴纳</div>
+                <div class="insurance-value">¥600</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除底部导航栏 -->
+    <!-- <div class="bottom-nav">...</div> -->
+
+    <script>
+        // 初始化薪资趋势图表
+        const salaryChart = echarts.init(document.getElementById('salaryChart'));
+        salaryChart.setOption({
+            tooltip: {
+                trigger: 'axis'
+            },
+            xAxis: {
+                type: 'category',
+                data: ['10月', '11月', '12月', '1月', '2月', '3月']
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value}元'
+                }
+            },
+            series: [{
+                data: [15200, 15400, 15600, 15400, 15600, 15800],
+                type: 'line',
+                smooth: true,
+                areaStyle: {
+                    opacity: 0.1
+                }
+            }]
+        });
+
+        // 监听窗口大小变化，调整图表大小
+        window.addEventListener('resize', function() {
+            salaryChart.resize();
+        });
+
+        // 月份切换功能
+        const currentMonthElement = document.getElementById('currentMonth');
+        const prevMonthBtn = document.getElementById('prevMonth');
+        const nextMonthBtn = document.getElementById('nextMonth');
+    
+        let currentDate = new Date();
+    
+        // 更新显示的月份
+        function updateMonthDisplay() {
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            currentMonthElement.textContent = `${year}年${month}月`;
+        }
+    
+        // 上一个月
+        prevMonthBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateMonthDisplay();
+        });
+    
+        // 下一个月
+        nextMonthBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateMonthDisplay();
+        });
+    
+        // 初始化显示
+        updateMonthDisplay();
+    </script>
+</body>
+</html>

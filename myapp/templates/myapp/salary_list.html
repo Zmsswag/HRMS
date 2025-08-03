@@ -1,0 +1,218 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}薪资管理 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* 建议您将这些样式移动到单独的 CSS 文件中 */
+    .container {
+        padding: 10px;
+        padding-bottom: 80px; /* 避免内容被底部导航栏遮挡 */
+    }
+    .header {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background-color: #007bff;
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .header .back-btn {
+        color: white;
+        font-size: 1.2rem;
+    }
+    .header span {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+    .header .header-actions {
+        position: absolute;
+        right: 15px;
+    }
+    .header .add-btn {
+        color: white;
+        font-size: 1.2rem;
+        text-decoration: none;
+    }
+
+    .filter-section {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+    .search-bar {
+        display: flex;
+        margin-bottom: 10px;
+    }
+    .search-input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        border-right: none;
+    }
+    .search-btn {
+        padding: 8px 12px;
+        border: 1px solid #007bff;
+        background-color: #007bff;
+        color: white;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+    }
+    .filter-controls {
+        display: flex;
+        gap: 10px;
+    }
+    .filter-controls .form-control {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .stats-bar {
+        display: flex;
+        justify-content: space-around;
+        background-color: #e9f7fd;
+        color: #0c5460;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+
+    .salary-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .salary-card {
+        background-color: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        padding: 15px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .employee-name {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+    .salary-amount {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #dc3545;
+    }
+    .card-body {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    .no-records {
+        text-align: center;
+        color: #888;
+        padding: 50px 20px;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0;
+    }
+    .pagination a, .pagination span {
+        padding: 8px 12px;
+        margin: 0 5px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        color: #007bff;
+        border-radius: 4px;
+    }
+    .pagination .active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'home' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <span>薪资管理 ({{ month|date:"Y年m月" }})</span>
+    <div class="header-actions">
+        <a href="{% url 'salary_add' %}" class="add-btn">
+            <i class="fas fa-plus"></i>
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="filter-section">
+        <form method="get" action="{% url 'salary_list' %}">
+            <div class="search-bar">
+                <input type="search" name="search" class="search-input" placeholder="搜索员工姓名、身份证号" value="{{ search_query }}">
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-controls">
+                <select name="department" class="form-control" onchange="this.form.submit()">
+                    <option value="">所有部门</option>
+                    {% for dept in departments %}
+                        <option value="{{ dept.department_id }}" {% if dept.department_id|stringformat:"s" == department_id %}selected{% endif %}>{{ dept.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="month" name="month" class="form-control" value="{{ month|date:"Y-m" }}" onchange="this.form.submit()">
+            </div>
+        </form>
+    </div>
+
+    <div class="stats-bar">
+        <span>总计: <strong>¥{{ total_amount|floatformat:2 }}</strong></span>
+        <span>平均: <strong>¥{{ avg_amount|floatformat:2 }}</strong></span>
+        <span>人数: <strong>{{ page_obj.paginator.count }}</strong></span>
+    </div>
+
+    <ul class="salary-list">
+        {% for salary in page_obj %}
+            <li class="salary-card">
+                <div class="card-header">
+                    <span class="employee-name">{{ salary.employee.name }}</span>
+                    <span class="salary-amount">¥{{ salary.amount }}</span>
+                </div>
+                <div class="card-body">
+                    工号: {{ salary.employee.employee_id }} | 身份证号: {{ salary.employee.id_number|default:"未填写" }}
+                </div>
+            </li>
+        {% empty %}
+            <div class="no-records">
+                <i class="fas fa-file-invoice-dollar fa-3x" style="margin-bottom: 15px;"></i>
+                <p>没有找到符合条件的薪资记录</p>
+            </div>
+        {% endfor %}
+    </ul>
+
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?search={{ search_query }}&department={{ department_id }}&month={{ month|date:"Y-m" }}&page={{ page_obj.previous_page_number }}">上一页</a>
+        {% endif %}
+        
+        <span class="active">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?search={{ search_query }}&department={{ department_id }}&month={{ month|date:"Y-m" }}&page={{ page_obj.next_page_number }}">下一页</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

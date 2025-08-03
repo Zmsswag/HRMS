@@ -1,0 +1,67 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}个人中心 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'myapp/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-header">
+    <div class="user-info">
+        <div class="avatar">{{ user.name|first }}</div>
+        <div class="user-details">
+            <div class="user-name">{{ user.name }}</div>
+            <div class="user-position">
+                {% if user_departments %}
+                    {{ user_departments.0.department.name }} - {{ user_departments.0.position.title }}
+                {% else %}
+                    暂无部门职位
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-item">
+        <div class="stat-value">{{ attendance_count|default:"0" }}</div>
+        <div class="stat-label">出勤天数</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-value">{{ pending_tasks|default:"0" }}</div>
+        <div class="stat-label">待办任务</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-value">{{ pending_approvals|default:"0" }}</div>
+        <div class="stat-label">待审批</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-value">{{ leave_balance|default:"0" }}</div>
+        <div class="stat-label">年假余额</div>
+    </div>
+</div>
+
+<div class="menu-group">
+    <div class="menu-title">工作管理</div>
+    <a href="{% url 'attendance_record' %}" class="menu-item">
+        <i class="fas fa-calendar-alt menu-icon"></i>
+        <span class="menu-label">我的考勤</span>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+    </a>
+    <a href="{% url 'task_list' %}" class="menu-item">
+        <i class="fas fa-tasks menu-icon"></i>
+        <span class="menu-label">我的任务</span>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+    </a>
+    <a href="{% url 'message_list' %}" class="menu-item">
+        <i class="fas fa-comment menu-icon"></i>
+        <span class="menu-label">消息中心</span>
+        <i class="fas fa-chevron-right menu-arrow"></i>
+    </a>
+</div>
+
+<a href="{% url 'logout' %}" class="logout-btn">退出登录</a>
+{% endblock %}

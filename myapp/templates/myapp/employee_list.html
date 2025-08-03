@@ -1,0 +1,205 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}员工管理 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'myapp/css/employee_list.css' %}">
+
+<style>
+    
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'home' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <span>员工管理</span>
+    <div class="header-actions">
+        <a href="{% url 'employee_add' %}" class="add-btn">
+            <i class="fas fa-plus"></i>
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="search-bar">
+        <input type="search" id="search-input" class="search-input" placeholder="搜索员工姓名、工号" value="{{ search_query }}">
+        <button id="filter-toggle" class="filter-btn">
+            <i class="fas fa-filter"></i>
+        </button>
+    </div>
+
+    <div id="filter-panel" class="filter-panel">
+        <div class="filter-item">
+            <label class="filter-label">部门</label>
+            <select id="department-filter" class="form-control">
+                <option value="">全部部门</option>
+                {% for dept in departments %}
+                <option value="{{ dept.name }}" {% if department_query == dept.name %}selected{% endif %}>{{ dept.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="filter-label">在职状态</label>
+            <select id="status-filter" class="form-control">
+                <option value="all" {% if is_employed == 'all' %}selected{% endif %}>全部</option>
+                <option value="is_employed" {% if is_employed == 'is_employed' %}selected{% endif %}>在职</option>
+                <option value="not_employed" {% if is_employed == 'not_employed' %}selected{% endif %}>离职</option>
+            </select>
+        </div>
+        <button id="apply-filter" class="btn btn-primary">应用筛选</button>
+    </div>
+
+    <div id="employee_list" class="employee_list">
+        {% include 'myapp/employee_list_partial.html' %}
+    </div>
+
+    <div id="pagination" class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="javascript:void(0)" class="page-link" data-page="{{ page_obj.previous_page_number }}">上一页</a>
+        {% endif %}
+        
+        <span class="page-link active">{{ page_obj.number }}</span>
+        
+        {% if page_obj.has_next %}
+        <a href="javascript:void(0)" class="page-link" data-page="{{ page_obj.next_page_number }}">下一页</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 筛选面板切换
+        const filterToggle = document.getElementById('filter-toggle');
+        const filterPanel = document.getElementById('filter-panel');
+        
+        filterToggle.addEventListener('click', function() {
+            filterPanel.style.display = filterPanel.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        // 应用筛选
+        const applyFilter = document.getElementById('apply-filter');
+        applyFilter.addEventListener('click', function() {
+            loadEmployees(1);
+        });
+        
+        // 搜索框输入事件
+        const searchInput = document.getElementById('search-input');
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
+                loadEmployees(1);
+            }, 500);
+        });
+        
+        // 分页点击事件
+        document.getElementById('pagination').addEventListener('click', function(e) {
+            if (e.target.classList.contains('page-link') && e.target.dataset.page) {
+                e.preventDefault();
+                loadEmployees(e.target.dataset.page);
+            }
+        });
+        
+        // AJAX加载员工数据
+        function loadEmployees(page) {
+            const search = document.getElementById('search-input').value;
+            const department = document.getElementById('department-filter').value;
+            const status = document.getElementById('status-filter').value;
+            
+            // 构建URL
+            const url = `{% url 'employee_list' %}?search=${encodeURIComponent(search)}&department=${encodeURIComponent(department)}&status=${status}&page=${page}&format=json`;
+            
+            // 显示加载状态
+            document.getElementById('employee_list').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+            
+            // 发送AJAX请求
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateEmployeeList(data);
+                updatePagination(data.pagination);
+                
+                // 更新URL，但不刷新页面
+                const newUrl = `{% url 'employee_list' %}?search=${encodeURIComponent(search)}&department=${encodeURIComponent(department)}&status=${status}&page=${page}`;
+                history.pushState({}, '', newUrl);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('employee_list').innerHTML = '<div class="alert alert-danger">加载数据失败，请重试</div>';
+            });
+        }
+        
+        // 更新员工列表
+        function updateEmployeeList(data) {
+            const employeeList = document.getElementById('employee_list');
+            
+            if (data.employees.length === 0) {
+                employeeList.innerHTML = '<div class="alert alert-info">没有找到匹配的员工</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            data.employees.forEach(employee => {
+                let deptHtml = '';
+                employee.departments.forEach(dept => {
+                    deptHtml += `<div>${dept.department_name} - ${dept.position_title}</div>`;
+                });
+                
+                const statusClass = employee.is_employed ? 'status-employed' : 'status-not-employed';
+                const statusText = employee.is_employed ? '在职' : '离职';
+                
+                html += `
+                <div class="employee-card">
+                    <div class="employee-name">
+                        ${employee.name}
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="employee-info">
+                        <div>工号: ${employee.employee_id}</div>
+                        <div>入职日期: ${employee.current_hire_date}</div>
+                        <div>部门职位: ${deptHtml || '暂无部门信息'}</div>
+                    </div>
+                    <div class="employee-actions">
+                       <a href="/employee/${employee.employee_id}/" class="btn btn-sm btn-primary">查看详情</a>
+                    </div>
+                </div>
+                `;
+            });
+            
+            employeeList.innerHTML = html;
+        }
+        
+        // 更新分页
+        function updatePagination(pagination) {
+            const paginationElement = document.getElementById('pagination');
+            
+            let html = '';
+            
+            if (pagination.has_previous) {
+                html += `<a href="javascript:void(0)" class="page-link" data-page="${pagination.previous_page}">上一页</a>`;
+            }
+            
+            html += `<span class="page-link active">${pagination.current_page}</span>`;
+            
+            if (pagination.has_next) {
+                html += `<a href="javascript:void(0)" class="page-link" data-page="${pagination.next_page}">下一页</a>`;
+            }
+            
+            paginationElement.innerHTML = html;
+        }
+    });
+</script>
+{% endblock %}

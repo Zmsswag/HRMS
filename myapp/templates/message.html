@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>消息中心 - 综合人力资源信息处理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding-bottom: 60px;
+        }
+
+        .status-bar {
+            height: 24px;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 12px;
+            align-items: center;
+        }
+
+        .header {
+            background: #1565c0;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-bar {
+            background: white;
+            margin: 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            padding: 10px 15px;
+            gap: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tab {
+            color: #666;
+            font-size: 14px;
+            padding: 5px 0;
+            position: relative;
+        }
+
+        .tab.active {
+            color: #1565c0;
+            font-weight: bold;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #1565c0;
+        }
+
+        .message-list {
+            background: white;
+        }
+
+        .message-item {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .message-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: #e3f2fd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #1565c0;
+            margin-right: 12px;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-title {
+            font-size: 15px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .message-preview {
+            font-size: 13px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            background: #ff4444;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .nav-item.active {
+            color: #1565c0;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        /* 添加导航栏样式 */
+        .filter-bar {
+            display: flex;
+            background: white;
+            padding: 10px 15px;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid #eee;
+        }
+
+        .filter-btn {
+            padding: 6px 16px;
+            border-radius: 15px;
+            border: none;
+            background: none;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .filter-btn.active {
+            background: #1565c0;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="header">
+        <span>消息中心</span>
+        <i class="fas fa-ellipsis-v"></i>
+    </div>
+
+    <div class="search-bar">
+        <i class="fas fa-search" style="color: #999;"></i>
+        <input type="search" class="search-input" placeholder="搜索消息">
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active">全部</button>
+        <button class="filter-btn">系统通知</button>
+        <button class="filter-btn">审批消息</button>
+        <button class="filter-btn">公告</button>
+    </div>
+
+    <div class="message-list">
+        <a href="message-detail.html" class="message-item">
+            <div class="message-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-title">
+                    <div style="display: flex; align-items: center;">
+                        <div class="unread-dot"></div>
+                        <span>系统更新通知</span>
+                    </div>
+                    <span class="message-time">10:30</span>
+                </div>
+                <div class="message-preview">系统将于今晚22:00-23:00进行例行维护更新，请提前做好相关工作安排。</div>
+            </div>
+        </a>
+
+        <a href="message-detail.html" class="message-item">
+            <div class="message-icon" style="background: #fff3e0; color: #f57c00;">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-title">
+                    <div style="display: flex; align-items: center;">
+                        <div class="unread-dot"></div>
+                        <span>请假审批</span>
+                    </div>
+                    <span class="message-time">09:15</span>
+                </div>
+                <div class="message-preview">您的请假申请已通过审批，请查看详情。</div>
+            </div>
+        </a>
+
+        <a href="message-detail.html" class="message-item">
+            <div class="message-icon" style="background: #e8f5e9; color: #2e7d32;">
+                <i class="fas fa-bullhorn"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-title">
+                    <span>部门通知</span>
+                    <span class="message-time">昨天</span>
+                </div>
+                <div class="message-preview">关于本周五下午团建活动的具体安排，请各位同事准时参加。</div>
+            </div>
+        </a>
+
+        <a href="message-detail.html" class="message-item">
+            <div class="message-icon" style="background: #fce4ec; color: #c2185b;">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-title">
+                    <span>考勤提醒</span>
+                    <span class="message-time">昨天</span>
+                </div>
+                <div class="message-preview">您昨日下午未打卡，请及时补卡。</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="task.html" class="nav-item">
+            <i class="fas fa-tasks"></i>
+            <span>任务</span>
+        </a>
+        <a href="message.html" class="nav-item active">
+            <i class="fas fa-comment"></i>
+            <span>消息</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+    <script>
+        // 添加导航栏切换功能
+        const filterBar = document.querySelector('.filter-bar');
+        const filterBtns = filterBar.querySelectorAll('.filter-btn');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 移除所有活动状态
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // 添加当前按钮的活动状态
+                btn.classList.add('active');
+                
+                // 这里可以添加切换不同消息列表的逻辑
+                console.log('切换到:', btn.textContent);
+            });
+        });
+    </script>
+</body>
+</html>

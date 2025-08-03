@@ -1,0 +1,297 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>员工详情 - 综合人力资源信息处理系统</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'myapp/css/employee_detail.css' %}">
+</head>
+<body>
+  <div class="container">
+    <div id="app" v-cloak>
+      <!-- 返回按钮 -->
+      <div class="back-button">
+        <a href="{% url 'employee_list' %}" class="btn btn-secondary">
+          <i class="bi bi-arrow-left"></i> 返回员工列表
+        </a>
+      </div>
+
+      <div v-if="loading" class="text-center my-5">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">加载中...</span>
+        </div>
+        <p>正在加载员工信息...</p>
+      </div>
+      
+      <div v-else>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1>员工详情: [[ employee.name ]]</h1>
+          <div>
+            <a :href="'/employee/' + employee.employee_id + '/edit/'" class="btn btn-primary">编辑信息</a>
+          </div>
+        </div>
+        
+        <!-- 基本信息 -->
+        <div class="card">
+          <div class="card-header">基本信息</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>员工ID:</strong> [[ employee.employee_id ]]</p>
+                <p><strong>姓名:</strong> [[ employee.name ]]</p>
+                <p><strong>身份证号:</strong> [[ employee.id_number ]]</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>年龄:</strong> [[ employee.age ]]</p>
+                <p><strong>入职日期:</strong> [[ employee.current_hire_date ]]</p>
+                <p><strong>在职状态:</strong> <span :class="employee.is_employed ? 'text-success' : 'text-danger'">[[ employee.is_employed ? '在职' : '离职' ]]</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 部门和职位信息 -->
+        <div class="card">
+          <div class="card-header">部门和职位信息</div>
+          <div class="card-body">
+            <div v-if="dept_positions.length === 0" class="text-muted">
+              暂无部门信息
+            </div>
+            <table v-else class="table table-striped">
+              <thead>
+                <tr>
+                  <th>部门</th>
+                  <th>职位</th>
+                  <th>开始日期</th>
+                  <th>结束日期</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(dp, index) in dept_positions" :key="index">
+                  <td>[[ dp.department_name ]]</td>
+                  <td>[[ dp.position ]]</td>
+                  <td>[[ dp.start_date ]]</td>
+                  <td>[[ dp.end_date ? dp.end_date : '至今' ]]</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- 雇佣历史 -->
+        <div class="card">
+          <div class="card-header">雇佣历史</div>
+          <div class="card-body">
+            <div v-if="employment_history.length === 0" class="text-muted">
+              暂无雇佣历史记录
+            </div>
+            <table v-else class="table table-striped">
+              <thead>
+                <tr>
+                  <th>入职日期</th>
+                  <th>离职日期</th>
+                  <th>离职原因</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(history, index) in employment_history" :key="index">
+                  <td>[[ history.hire_date ]]</td>
+                  <td>[[ history.leave_date ? history.leave_date : '至今' ]]</td>
+                  <td>[[ history.leave_reason ? history.leave_reason : '-' ]]</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- 考勤记录 -->
+        <div class="card">
+          <div class="card-header">最近考勤记录</div>
+          <div class="card-body">
+            <div v-if="recent_attendance.length === 0" class="text-muted">
+              暂无考勤记录
+            </div>
+            <table v-else class="table table-striped">
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>时间</th>
+                  <th>类型</th>
+                  <th>状态</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(attendance, index) in recent_attendance" :key="index">
+                  <td>[[ attendance.date ]]</td>
+                  <td>[[ attendance.time ]]</td>
+                  <td>[[ attendance.type ]]</td>
+                  <td>
+                    <span :class="getStatusClass(attendance.status)">[[ attendance.status ]]</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- 薪资记录 -->
+        <div class="card">
+          <div class="card-header">最近薪资记录</div>
+          <div class="card-body">
+            <div v-if="recent_salary.length === 0" class="text-muted">
+              暂无薪资记录
+            </div>
+            <table v-else class="table table-striped">
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>基本工资</th>
+                  <th>奖金</th>
+                  <th>扣除</th>
+                  <th>总计</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(salary, index) in recent_salary" :key="index">
+                  <td>[[ salary.date ]]</td>
+                  <td>¥[[ salary.base_salary ]]</td>
+                  <td>¥[[ salary.bonus ]]</td>
+                  <td>¥[[ salary.deduction ]]</td>
+                  <td>¥[[ calculateTotal(salary) ]]</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- 任务 -->
+        <div class="card">
+          <div class="card-header">当前任务</div>
+          <div class="card-body">
+            <div v-if="assigned_tasks.length === 0" class="text-muted">
+              暂无分配的任务
+            </div>
+            <table v-else class="table table-striped">
+              <thead>
+                <tr>
+                  <th>任务名称</th>
+                  <th>开始日期</th>
+                  <th>预计结束</th>
+                  <th>优先级</th>
+                  <th>状态</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(task, index) in assigned_tasks" :key="index">
+                  <td>[[ task.title ]]</td>
+                  <td>[[ task.start_date ]]</td>
+                  <td>[[ task.expected_end ]]</td>
+                  <td>
+                    <span :class="getPriorityClass(task.priority)">[[ task.priority ]]</span>
+                  </td>
+                  <td>[[ task.status ]]</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    new Vue({
+      delimiters: ['[[', ']]'],
+      el: '#app',
+      data: {
+        employee: {},
+        dept_positions: [],
+        employment_history: [],
+        recent_attendance: [],
+        recent_salary: [],
+        assigned_tasks: [],
+        loading: true,
+        error: null
+      },
+      mounted() {
+        // 从URL获取员工ID
+        const pathParts = window.location.pathname.split('/');
+        const employeeId = '{{ employee_id }}';
+        
+        // 获取员工详情数据
+        axios.get(`/employee/detail/${employeeId}/?format=json`)
+          .then(response => {
+            const data = response.data;
+            this.employee = data.employee;
+            this.dept_positions = data.departments.map(dept => ({
+              department_name: dept.department_name,
+              position: dept.position_title,
+              start_date: '暂无', // 后端未提供
+              end_date: null // 后端未提供
+            }));
+            this.employment_history = data.employment_history.map(history => ({
+              hire_date: history.hire_date,
+              leave_date: history.leave_date,
+              leave_reason: history.leave_reason
+            }));
+            this.recent_attendance = data.attendance.map(att => ({
+              date: att.date,
+              time: att.time,
+              type: att.type,
+              status: '正常' // 后端未提供状态信息，默认为正常
+            }));
+            this.recent_salary = data.salary.map(sal => ({
+              date: sal.date,
+              base_salary: sal.amount.toFixed(2),
+              bonus: '0.00', // 后端未提供
+              deduction: '0.00' // 后端未提供
+            }));
+            this.assigned_tasks = data.tasks.map(task => ({
+              title: task.content,
+              start_date: task.assign_time,
+              expected_end: task.expected_end,
+              priority: '中', // 后端未提供
+              status: `完成度: ${task.completion}%`
+            }));
+            this.loading = false;
+          })
+          .catch(error => {
+            this.error = '加载员工信息失败: ' + error.message;
+            this.loading = false;
+            console.error('Error fetching employee data:', error);
+          });
+      },
+      methods: {
+        calculateTotal(salary) {
+          return (parseFloat(salary.base_salary) + parseFloat(salary.bonus) - parseFloat(salary.deduction)).toFixed(2);
+        },
+        getStatusClass(status) {
+          switch(status) {
+            case '正常': return 'text-success';
+            case '迟到': return 'text-warning';
+            case '早退': return 'text-warning';
+            case '缺勤': return 'text-danger';
+            default: return '';
+          }
+        },
+        getPriorityClass(priority) {
+          switch(priority) {
+            case '高': return 'text-danger';
+            case '中': return 'text-warning';
+            case '低': return 'text-info';
+            default: return '';
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}考勤打卡 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container {
+        padding: 15px;
+        padding-bottom: 80px;
+    }
+    .header {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background-color: #007bff;
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .header .back-btn {
+        color: white;
+        font-size: 1.2rem;
+    }
+    .header span {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-right: 2rem; /* 为返回按钮留出空间 */
+    }
+    .clock-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .clock-time {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #333;
+    }
+    .clock-date {
+        font-size: 1rem;
+        color: #666;
+    }
+    .attendance-actions {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 30px;
+    }
+    .attendance-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: transform 0.2s;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .attendance-btn:active {
+        transform: scale(0.95);
+    }
+    .attendance-btn.check-in {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+    }
+    .attendance-btn.check-out {
+        background: linear-gradient(135deg, #ffc107, #e0a800);
+    }
+    .attendance-btn.disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+    .attendance-btn i {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .record-section h3 {
+        font-size: 1.2rem;
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+    .today-status {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-around;
+    }
+    .status-item {
+        text-align: center;
+    }
+    .status-item .label {
+        font-size: 0.9rem;
+        color: #666;
+    }
+    .status-item .time {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #333;
+    }
+    .status-item .time.not-checked {
+        color: #dc3545;
+    }
+    .record-list {
+        list-style: none;
+        padding: 0;
+    }
+    .record-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .record-item:last-child {
+        border-bottom: none;
+    }
+    .record-item-type.in { color: #28a745; }
+    .record-item-type.out { color: #ffc107; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'home' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <span>考勤打卡</span>
+</div>
+
+<div class="container">
+    <div class="clock-container">
+        <div id="clock-time" class="clock-time">--:--:--</div>
+        <div id="clock-date" class="clock-date">----年--月--日</div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="attendance-actions">
+            <button type="submit" name="type" value="in" class="attendance-btn check-in {% if today_in %}disabled{% endif %}" {% if today_in %}disabled{% endif %}>
+                <i class="fas fa-sign-in-alt"></i>
+                <span>上班打卡</span>
+            </button>
+            <button type="submit" name="type" value="out" class="attendance-btn check-out {% if today_out %}disabled{% endif %}" {% if today_out %}disabled{% endif %}>
+                <i class="fas fa-sign-out-alt"></i>
+                <span>下班打卡</span>
+            </button>
+        </div>
+    </form>
+    
+    <div class="record-section">
+        <h3>今日打卡状态</h3>
+        <div class="today-status">
+            <div class="status-item">
+                <div class="label">上班时间</div>
+                <div class="time {% if not today_in %}not-checked{% endif %}">
+                    {{ today_in.time|time:"H:i:s"|default:"未打卡" }}
+                </div>
+            </div>
+            <div class="status-item">
+                <div class="label">下班时间</div>
+                <div class="time {% if not today_out %}not-checked{% endif %}">
+                    {{ today_out.time|time:"H:i:s"|default:"未打卡" }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="record-section">
+        <h3>最近一周打卡记录</h3>
+        <ul class="record-list">
+            {% for record in recent_records %}
+                <li class="record-item">
+                    <span>{{ record.date|date:"Y-m-d" }}</span>
+                    <span class="record-item-type {{ record.type }}">
+                        {% if record.type == 'in' %}上班{% else %}下班{% endif %}
+                    </span>
+                    <span>{{ record.time|time:"H:i:s" }}</span>
+                </li>
+            {% empty %}
+                <li class="record-item" style="justify-content: center; color: #888;">暂无记录</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function updateClock() {
+        const now = new Date();
+        const timeString = now.toTimeString().split(' ')[0];
+        const dateString = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+        
+        document.getElementById('clock-time').textContent = timeString;
+        document.getElementById('clock-date').textContent = dateString;
+    }
+    
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call
+</script>
+{% endblock %}

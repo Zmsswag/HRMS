@@ -1,0 +1,48 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}更新任务进度 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container { padding: 15px; max-width: 600px; margin: auto; padding-bottom: 80px; }
+    .update-card { background: #fff; padding: 20px; border-radius: 8px; text-align: center; }
+    .update-card h2 { margin-top: 0; }
+    .completion-display { font-size: 3rem; font-weight: bold; color: #007bff; margin: 20px 0; }
+    .completion-slider { width: 100%; }
+    .btn-submit { /* ... styles ... */ }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'task_detail' task.task_id %}" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+    <span>更新进度</span>
+</div>
+
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="update-card">
+            <h2>{{ task.content.title|default:"无标题任务" }}</h2>
+            <div class="completion-display">
+                <span id="completion-value">{{ task.completion }}</span>%
+            </div>
+            <input type="range" name="completion" id="completion-slider" class="completion-slider" 
+                   min="0" max="100" value="{{ task.completion }}">
+            <br><br>
+            <button type="submit" class="btn-submit">确认更新</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const slider = document.getElementById('completion-slider');
+    const display = document.getElementById('completion-value');
+    slider.addEventListener('input', function() {
+        display.textContent = this.value;
+    });
+</script>
+{% endblock %}

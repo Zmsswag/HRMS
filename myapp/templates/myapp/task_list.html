@@ -1,0 +1,93 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}任务列表 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container { padding: 15px; padding-bottom: 80px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 15px; background-color: #007bff; color: white; position: sticky; top: 0; z-index: 100; }
+    .header .back-btn { color: white; font-size: 1.2rem; }
+    .header span { flex-grow: 1; text-align: center; font-size: 1.1rem; font-weight: bold; }
+    .header .add-btn { color: white; font-size: 1.5rem; text-decoration: none; }
+    
+    .filter-tabs {
+        display: flex;
+        justify-content: space-around;
+        background-color: #f8f9fa;
+        padding: 5px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .filter-tabs a {
+        flex-grow: 1;
+        text-align: center;
+        padding: 10px;
+        text-decoration: none;
+        color: #6c757d;
+        font-weight: bold;
+        border-radius: 6px;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .filter-tabs a.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .task-card {
+        background-color: #fff;
+        border: 1px solid #eee;
+        border-left: 5px solid #007bff; /* Default color */
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .task-card.completed { border-left-color: #28a745; }
+    .task-card.overdue { border-left-color: #dc3545; }
+    .task-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; }
+    .task-meta { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
+    .task-meta span { margin-right: 10px; }
+    .progress-bar { height: 8px; background-color: #e9ecef; border-radius: 4px; overflow: hidden; }
+    .progress { height: 100%; background-color: #007bff; border-radius: 4px; transition: width 0.5s; }
+    .pagination { /* styles from previous templates */ }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'home' %}" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+    <span>任务管理</span>
+    <a href="{% url 'task_add' %}" class="add-btn"><i class="fas fa-plus-circle"></i></a>
+</div>
+
+<div class="container">
+    <div class="filter-tabs">
+        <a href="?status=all" class="{% if status == 'all' %}active{% endif %}">全部</a>
+        <a href="?status=pending" class="{% if status == 'pending' %}active{% endif %}">进行中</a>
+        <a href="?status=completed" class="{% if status == 'completed' %}active{% endif %}">已完成</a>
+        <a href="?status=overdue" class="{% if status == 'overdue' %}active{% endif %}">已逾期</a>
+    </div>
+
+    {% for task in page_obj %}
+        <a href="{% url 'task_detail' task.task_id %}" class="task-card 
+            {% if task.completion == 100 %}completed{% elif task.expected_end < timezone.now and task.completion < 100 %}overdue{% endif %}">
+            <div class="task-title">{{ task.content.title|default:"无标题任务" }}</div>
+            <div class="task-meta">
+                <span><i class="fas fa-user-tie"></i> 分配人: {{ task.assigner }}</span>
+                <span><i class="far fa-calendar-times"></i> 截止: {{ task.expected_end|date:"Y-m-d" }}</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ task.completion }}%;"></div>
+            </div>
+        </a>
+    {% empty %}
+        <p class="text-center" style="color: #888; padding: 30px;">当前分类下没有任务。</p>
+    {% endfor %}
+    
+    {% include 'myapp/includes/pagination.html' with page_obj=page_obj %}
+</div>
+{% endblock %}

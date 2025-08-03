@@ -1,0 +1,88 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}消息详情 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'myapp/css/message_detail.css' %}">
+<style>
+    /* 为了快速看到效果，在这里添加一些简单的样式 */
+    /* 建议您将这些样式移动到 message_detail.css 文件中 */
+    .container {
+        padding: 20px;
+        padding-bottom: 80px; /* 避免内容被底部导航栏遮挡 */
+    }
+    .header {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background-color: #007bff;
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .header .back-btn {
+        color: white;
+        font-size: 1.2rem;
+    }
+    .header span {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-right: 2rem; /* 为返回按钮留出空间 */
+    }
+    .message-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .message-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .message-meta {
+        font-size: 0.9rem;
+        color: #888;
+        margin-bottom: 20px;
+    }
+    .message-body {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #555;
+    }
+    .message-body p {
+        margin-bottom: 1em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'message_list' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <span>消息详情</span>
+</div>
+
+<div class="container">
+    <div class="message-card">
+        <h1 class="message-title">{{ message.content.title|default:"系统通知" }}</h1>
+        <div class="message-meta">
+            <span>类型: {{ message.msg_type|default:"通知" }}</span> |
+            <span>发送时间: {{ message.timestamp|date:"Y-m-d H:i:s" }}</span>
+        </div>
+        <div class="message-body">
+            {# 假设消息主体在 content 的 body 字段中 #}
+            {# 使用 safe 过滤器可以渲染HTML标签，但要确保内容是可信的 #}
+            <p>{{ message.content.body|default:"无详细内容。"|safe }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

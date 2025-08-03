@@ -1,0 +1,149 @@
+{# 这个页面可能是公开的，所以不一定需要继承base.html，但为了风格统一，我们先继承 #}
+{% extends 'myapp/base.html' %} 
+{% load static %}
+
+{% block title %}在线应聘 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<style>
+    .public-container {
+        padding: 20px;
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .public-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    .public-header h1 {
+        font-size: 1.8rem;
+        color: #007bff;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+    }
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+    .form-control:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+    }
+    .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .btn-submit:hover {
+        background-color: #218838;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="public-container">
+    <div class="public-header">
+        <h1>职位申请</h1>
+        <p>欢迎加入我们，请填写真实信息</p>
+    </div>
+    <form method="post" id="application-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">姓名</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="id_number">身份证号</label>
+            <input type="text" id="id_number" name="id_number" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="education">学历</label>
+            <input type="text" id="education" name="education" class="form-control" placeholder="例如：本科、硕士等" required>
+        </div>
+        <div class="form-group">
+            <label for="department">期望部门</label>
+            <select id="department" name="department_id" class="form-control" required>
+                <option value="">--- 请选择部门 ---</option>
+                {% for dept in departments %}
+                    <option value="{{ dept.department_id }}">{{ dept.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="position">期望职位</label>
+            <select id="position" name="position_id" class="form-control" required disabled>
+                <option value="">--- 请先选择部门 ---</option>
+            </select>
+        </div>
+        <button type="submit" class="btn-submit">提交申请</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const departmentSelect = document.getElementById('department');
+    const positionSelect = document.getElementById('position');
+
+    departmentSelect.addEventListener('change', function() {
+        const departmentId = this.value;
+        positionSelect.innerHTML = '<option value="">--- 正在加载职位... ---</option>'; // 清空并提示加载
+        positionSelect.disabled = true;
+
+        if (!departmentId) {
+            positionSelect.innerHTML = '<option value="">--- 请先选择部门 ---</option>';
+            return;
+        }
+
+        // 使用您提供的API接口获取职位
+        fetch(`{% url 'get_positions' %}?department_id=${departmentId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网络响应错误');
+                }
+                return response.json();
+            })
+            .then(data => {
+                positionSelect.innerHTML = '<option value="">--- 请选择职位 ---</option>'; // 重置默认选项
+                if (data.length > 0) {
+                    data.forEach(position => {
+                        const option = document.createElement('option');
+                        option.value = position.position_id;
+                        option.textContent = position.title;
+                        positionSelect.appendChild(option);
+                    });
+                    positionSelect.disabled = false;
+                } else {
+                    positionSelect.innerHTML = '<option value="">--- 该部门暂无招聘职位 ---</option>';
+                }
+            })
+            .catch(error => {
+                console.error('获取职位失败:', error);
+                positionSelect.innerHTML = '<option value="">--- 加载职位失败 ---</option>';
+            });
+    });
+});
+</script>
+{% endblock %}

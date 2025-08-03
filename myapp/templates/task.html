@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>任务管理 - 综合人力资源信息处理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding-bottom: 60px;
+        }
+
+        .status-bar {
+            height: 24px;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 12px;
+            align-items: center;
+        }
+
+        .header {
+            background: #1565c0;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-bar {
+            background: white;
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            font-size: 13px;
+            color: #666;
+            background: white;
+        }
+
+        .filter-btn.active {
+            background: #1565c0;
+            color: white;
+            border-color: #1565c0;
+        }
+
+        .task-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1565c0;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .task-list {
+            margin: 15px;
+        }
+
+        .task-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .task-priority {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .priority-high {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .priority-medium {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .priority-low {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .task-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-value {
+            height: 100%;
+            background: #1565c0;
+            border-radius: 2px;
+        }
+
+        .task-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .task-members {
+            display: flex;
+            gap: -8px;
+        }
+
+        .member-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            background: #e3f2fd;
+            color: #1565c0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            border: 2px solid white;
+        }
+
+        .task-due {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .add-task-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            background: #1565c0;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .nav-item.active {
+            color: #1565c0;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+    </style>
+    <style>
+        .tab-group {
+            display: flex;
+            background: white;
+            padding: 10px 15px;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .tab-btn {
+            padding: 6px 16px;
+            border-radius: 15px;
+            border: none;
+            background: none;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tab-btn.active {
+            background: #1565c0;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="header">
+        <span>任务管理</span>
+        <i class="fas fa-search"></i>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="in-progress">进行中</button>
+        <button class="filter-btn" data-filter="completed">已完成</button>
+        <button class="filter-btn" data-filter="overdue">已逾期</button>
+        <button class="filter-btn" data-filter="created">我创建的</button>
+        <button class="filter-btn" data-filter="participated">我参与的</button>
+    </div>
+
+    <div class="task-stats">
+        <div class="stat-card">
+            <div class="stat-value">12</div>
+            <div class="stat-label">全部任务</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">5</div>
+            <div class="stat-label">进行中</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">6</div>
+            <div class="stat-label">已完成</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">1</div>
+            <div class="stat-label">已逾期</div>
+        </div>
+    </div>
+
+    <div class="task-list">
+        <div class="task-item">
+            <div class="task-header">
+                <div class="task-title">年度员工满意度调查</div>
+                <span class="task-priority priority-high">高优先级</span>
+            </div>
+            <div class="task-info">
+                <span>完成度 75%</span>
+                <span>3/4 子任务</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-value" style="width: 75%;"></div>
+            </div>
+            <div class="task-footer">
+                <div class="task-members">
+                    <div class="member-avatar">张</div>
+                    <div class="member-avatar">李</div>
+                    <div class="member-avatar">王</div>
+                </div>
+                <div class="task-due">截止日期：2024-03-25</div>
+            </div>
+        </div>
+
+        <div class="task-item">
+            <div class="task-header">
+                <div class="task-title">新员工入职培训计划</div>
+                <span class="task-priority priority-medium">中优先级</span>
+            </div>
+            <div class="task-info">
+                <span>完成度 30%</span>
+                <span>3/10 子任务</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-value" style="width: 30%;"></div>
+            </div>
+            <div class="task-footer">
+                <div class="task-members">
+                    <div class="member-avatar">赵</div>
+                    <div class="member-avatar">钱</div>
+                </div>
+                <div class="task-due">截止日期：2024-03-30</div>
+            </div>
+        </div>
+
+        <div class="task-item">
+            <div class="task-header">
+                <div class="task-title">部门KPI考核指标制定</div>
+                <span class="task-priority priority-low">低优先级</span>
+            </div>
+            <div class="task-info">
+                <span>完成度 90%</span>
+                <span>9/10 子任务</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-value" style="width: 90%;"></div>
+            </div>
+            <div class="task-footer">
+                <div class="task-members">
+                    <div class="member-avatar">孙</div>
+                    <div class="member-avatar">周</div>
+                    <div class="member-avatar">吴</div>
+                </div>
+                <div class="task-due">截止日期：2024-04-05</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="task.html" class="nav-item active">
+            <i class="fas fa-tasks"></i>
+            <span>任务</span>
+        </a>
+        <a href="message.html" class="nav-item">
+            <i class="fas fa-comment"></i>
+            <span>消息</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+
+    <!-- 删除浮动添加按钮 -->
+    <script>
+        // 添加过滤按钮点击事件处理
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // 移除所有按钮的active类
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // 为当前点击的按钮添加active类
+                button.classList.add('active');
+                
+                // 获取过滤类型
+                const filterType = button.getAttribute('data-filter');
+                
+                // 这里可以根据filterType筛选任务列表
+                filterTasks(filterType);
+            });
+        });
+
+        // 任务筛选函数
+        function filterTasks(filterType) {
+            const tasks = document.querySelectorAll('.task-item');
+            
+            tasks.forEach(task => {
+                switch(filterType) {
+                    case 'all':
+                        task.style.display = 'block';
+                        break;
+                    case 'in-progress':
+                        // 示例：根据完成度判断是否进行中
+                        const progress = task.querySelector('.progress-value').style.width;
+                        task.style.display = (parseInt(progress) < 100) ? 'block' : 'none';
+                        break;
+                    case 'completed':
+                        // 示例：根据完成度判断是否完成
+                        const completed = task.querySelector('.progress-value').style.width;
+                        task.style.display = (parseInt(completed) === 100) ? 'block' : 'none';
+                        break;
+                    case 'overdue':
+                        // 示例：根据截止日期判断是否逾期
+                        const dueDate = task.querySelector('.task-due').textContent;
+                        const isOverdue = new Date(dueDate.split('：')[1]) < new Date();
+                        task.style.display = isOverdue ? 'block' : 'none';
+                        break;
+                    case 'created':
+                        // 这里可以添加"我创建的"任务的筛选逻辑
+                        break;
+                    case 'participated':
+                        // 这里可以添加"我参与的"任务的筛选逻辑
+                        break;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

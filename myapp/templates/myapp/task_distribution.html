@@ -1,0 +1,223 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}任务分发 - 综合人力资源信息处理系统{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">任务分发</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> 您可以在此页面创建任务并分配给指定员工、部门或角色。
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">任务信息</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form id="taskForm" method="post">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">任务标题</label>
+                                            <input type="text" class="form-control" id="title" name="title" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">任务描述</label>
+                                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="priority" class="form-label">优先级</label>
+                                            <select class="form-select" id="priority" name="priority">
+                                                <option value="high">高</option>
+                                                <option value="medium" selected>中</option>
+                                                <option value="low">低</option>
+                                            </select>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="start_time" class="form-label">开始时间</label>
+                                                <input type="datetime-local" class="form-control" id="start_time" name="start_time" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="expected_end" class="form-label">预期完成时间</label>
+                                                <input type="datetime-local" class="form-control" id="expected_end" name="expected_end" required>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">任务分配</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="distribution_method" class="form-label">分配方式</label>
+                                        <select class="form-select" id="distribution_method" name="distribution_method">
+                                            <option value="specific" selected>指定人员</option>
+                                            <option value="department">按部门分配</option>
+                                            <option value="role">按角色分配</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div id="specific_assignment" class="assignment-section">
+                                        <div class="mb-3">
+                                            <label for="filter_department" class="form-label">筛选部门</label>
+                                            <select class="form-select" id="filter_department" multiple>
+                                                {% for dept in departments %}
+                                                <option value="{{ dept.department_id }}">{{ dept.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="employees" class="form-label">选择员工</label>
+                                            <select class="form-select" id="employees" name="employee_ids" multiple required>
+                                                {% for emp in employees %}
+                                                <option value="{{ emp.employee_id }}">{{ emp.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="department_assignment" class="assignment-section d-none">
+                                        <div class="mb-3">
+                                            <label for="departments" class="form-label">选择部门</label>
+                                            <select class="form-select" id="departments" name="department_ids" multiple>
+                                                {% for dept in departments %}
+                                                <option value="{{ dept.department_id }}">{{ dept.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="role_assignment" class="assignment-section d-none">
+                                        <div class="mb-3">
+                                            <label for="positions" class="form-label">选择职位</label>
+                                            <select class="form-select" id="positions" name="position_ids" multiple>
+                                                {% for pos in positions %}
+                                                <option value="{{ pos.position_id }}">{{ pos.title }} ({{ pos.department.name }})</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="button" id="submitTask" class="btn btn-primary">分发任务</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 处理分配方式切换
+        const distributionMethod = document.getElementById('distribution_method');
+        const specificAssignment = document.getElementById('specific_assignment');
+        const departmentAssignment = document.getElementById('department_assignment');
+        const roleAssignment = document.getElementById('role_assignment');
+        
+        distributionMethod.addEventListener('change', function() {
+            // 隐藏所有分配部分
+            specificAssignment.classList.add('d-none');
+            departmentAssignment.classList.add('d-none');
+            roleAssignment.classList.add('d-none');
+            
+            // 显示选中的分配部分
+            if (this.value === 'specific') {
+                specificAssignment.classList.remove('d-none');
+            } else if (this.value === 'department') {
+                departmentAssignment.classList.remove('d-none');
+            } else if (this.value === 'role') {
+                roleAssignment.classList.remove('d-none');
+            }
+        });
+        
+        // 部门筛选员工
+        const filterDepartment = document.getElementById('filter_department');
+        const employeesSelect = document.getElementById('employees');
+        
+        filterDepartment.addEventListener('change', function() {
+            // 这里应该发送AJAX请求获取筛选后的员工
+            // 简化示例，实际应该调用后端API
+            console.log('筛选部门:', this.value);
+        });
+        
+        // 提交任务
+        const submitButton = document.getElementById('submitTask');
+        const taskForm = document.getElementById('taskForm');
+        
+        submitButton.addEventListener('click', function() {
+            // 验证表单
+            if (!taskForm.checkValidity()) {
+                taskForm.reportValidity();
+                return;
+            }
+            
+            // 收集表单数据
+            const formData = new FormData(taskForm);
+            formData.append('distribution_method', distributionMethod.value);
+            
+            // 根据分配方式添加不同的分配对象
+            if (distributionMethod.value === 'specific') {
+                // 获取选中的员工
+                const selectedEmployees = Array.from(employeesSelect.selectedOptions).map(opt => opt.value);
+                selectedEmployees.forEach(empId => {
+                    formData.append('employee_ids', empId);
+                });
+            } else if (distributionMethod.value === 'department') {
+                // 获取选中的部门
+                const departmentsSelect = document.getElementById('departments');
+                const selectedDepartments = Array.from(departmentsSelect.selectedOptions).map(opt => opt.value);
+                selectedDepartments.forEach(deptId => {
+                    formData.append('department_ids', deptId);
+                });
+            } else if (distributionMethod.value === 'role') {
+                // 获取选中的职位
+                const positionsSelect = document.getElementById('positions');
+                const selectedPositions = Array.from(positionsSelect.selectedOptions).map(opt => opt.value);
+                selectedPositions.forEach(posId => {
+                    formData.append('position_ids', posId);
+                });
+            }
+            
+            // 提交表单
+            fetch('{% url "task_add" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('任务创建成功！');
+                    window.location.href = '{% url "task_list" %}';
+                } else {
+                    alert('任务创建失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('提交过程中发生错误，请重试。');
+            });
+        });
+    });
+</script>
+{% endblock %}

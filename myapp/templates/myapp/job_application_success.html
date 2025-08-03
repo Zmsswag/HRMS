@@ -1,0 +1,64 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}申请成功 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-container {
+        text-align: center;
+        padding: 50px 20px;
+        max-width: 500px;
+        margin: 40px auto;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .success-icon {
+        font-size: 5rem;
+        color: #28a745;
+        margin-bottom: 20px;
+    }
+    .success-container h1 {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 15px;
+    }
+    .success-container p {
+        font-size: 1rem;
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+    .btn-home {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.2s;
+    }
+    .btn-home:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <h1>申请提交成功！</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% else %}
+        <p>我们已经收到了您的申请，将会尽快进行审核，请保持通讯畅通。</p>
+    {% endif %}
+    <a href="{% url 'home' %}" class="btn-home">返回首页</a>
+</div>
+{% endblock %}

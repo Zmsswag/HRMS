@@ -1,0 +1,105 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}招聘申请列表 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+{# 复用 attendance_stats.html 的样式，可以考虑提取成公共css文件 #}
+<style>
+    .container { padding: 15px; padding-bottom: 80px; }
+    .header { display: flex; align-items: center; padding: 15px; background-color: #007bff; color: white; position: sticky; top: 0; z-index: 100; }
+    .header .back-btn { color: white; font-size: 1.2rem; }
+    .header span { flex-grow: 1; text-align: center; font-size: 1.1rem; font-weight: bold; margin-right: 2rem; }
+    .filter-form { background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .filter-form .form-row { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }
+    .filter-form .form-group { flex: 1; min-width: 120px; }
+    .filter-form label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+    .filter-form .form-control { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    .filter-form .btn-submit { padding: 8px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .stats-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; } /* 字体调小一点以容纳更多列 */
+    .stats-table thead { background-color: #e9ecef; }
+    .stats-table th, .stats-table td { padding: 8px; text-align: center; border: 1px solid #dee2e6; white-space: nowrap; }
+    .stats-table tbody tr:nth-child(odd) { background-color: #f8f9fa; }
+    .pagination { display: flex; justify-content: center; padding: 20px 0; }
+    .pagination a, .pagination span { padding: 8px 12px; margin: 0 5px; border: 1px solid #ddd; text-decoration: none; color: #007bff; border-radius: 4px; }
+    .pagination .active { background-color: #007bff; color: white; border-color: #007bff; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'home' %}" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+    <span>招聘申请列表</span>
+</div>
+
+<div class="container">
+    <form method="get" class="filter-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="department-filter">部门</label>
+                <select id="department-filter" name="department" class="form-control">
+                    <option value="">所有部门</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.department_id }}" {% if department_id == dept.department_id|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="position-filter">职位</label>
+                <select id="position-filter" name="position" class="form-control">
+                    <option value="">所有职位</option>
+                    {% for pos in positions %}
+                    <option value="{{ pos.position_id }}" {% if position_id == pos.position_id|stringformat:"s" %}selected{% endif %}>{{ pos.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn-submit">筛选</button>
+            </div>
+        </div>
+    </form>
+
+    <div style="overflow-x: auto;">
+        <table class="stats-table">
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>申请日期</th>
+                    <th>期望部门</th>
+                    <th>期望职位</th>
+                    <th>学历</th>
+                    <th>身份证号</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in page_obj %}
+                <tr>
+                    <td>{{ app.name }}</td>
+                    <td>{{ app.date|date:"Y-m-d" }}</td>
+                    <td>{{ app.expected_department.name }}</td>
+                    <td>{{ app.expected_position.title }}</td>
+                    <td>{{ app.education }}</td>
+                    <td>{{ app.id_number }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">没有找到符合条件的申请记录。</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?department={{ department_id }}&position={{ position_id }}&page={{ page_obj.previous_page_number }}">上一页</a>
+        {% endif %}
+        <span class="active">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?department={{ department_id }}&position={{ position_id }}&page={{ page_obj.next_page_number }}">下一页</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

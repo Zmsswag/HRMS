@@ -1,0 +1,30 @@
+{% if page_obj %}
+    {% for employee in page_obj %}
+        <div class="employee-card">
+            <div class="employee-name">
+                {{ employee.name }}
+                <span class="status-badge {% if employee.is_employed %}status-employed{% else %}status-not-employed{% endif %}">
+                    {% if employee.is_employed %}在职{% else %}离职{% endif %}
+                </span>
+            </div>
+            <div class="employee-info">
+                <div>工号: {{ employee.employee_id }}</div>
+                <div>入职日期: {{ employee.current_hire_date|date:"Y-m-d" }}</div>
+                <div>部门职位: 
+                    {% for dept_relation in employee.prefetched_departments %}
+                        <div>{{ dept_relation.department.name }} - {{ dept_relation.position.title }}</div>
+                    {% empty %}
+                        暂无部门信息
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="employee-actions">
+                <a href="{% url 'employee_detail' employee.employee_id %}" class="btn btn-sm btn-primary">查看详情</a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">没有找到匹配的员工</div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-info">没有员工数据</div>
+{% endif %}

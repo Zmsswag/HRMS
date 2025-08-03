@@ -1,0 +1,434 @@
+[
+  {
+    "id": "2012",
+    "applicantName": "张三",
+    "department": "研发部",
+    "leaveType": "病假",
+    "startDate": "2025-06-10",
+    "endDate": "2025-07-16",
+    "duration": 37,
+    "reason": "请假",
+    "status": "pending",
+    "currentApprover": "1",
+    "currentNodeId": "node_1750130305512",
+    "isApplicant": true,
+    "workflowId": "wf_1750130324694",
+    "workflowName": "6172",
+    "createdAt": "2025-06-19T13:17:28.719Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-19 21:17:28",
+        "comment": "发起申请"
+      }
+    ]
+  },
+  {
+    "id": "2011",
+    "applicantName": "2",
+    "department": "研发部",
+    "leaveType": "病假",
+    "startDate": "2025-06-13",
+    "endDate": "2025-07-17",
+    "duration": 35,
+    "reason": "1",
+    "status": "rejected",
+    "currentApprover": "2",
+    "currentNodeId": "node_1750130312493",
+    "isApplicant": true,
+    "workflowId": "wf_1750130324694",
+    "workflowName": "6172",
+    "createdAt": "2025-06-17T05:11:56.061Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "2",
+        "timestamp": "2025-06-17 13:11:56",
+        "comment": "发起申请"
+      },
+      {
+        "action": "approve",
+        "operator": "1",
+        "timestamp": "2025-06-17 13:12:02",
+        "comment": "同意"
+      },
+      {
+        "action": "reject",
+        "operator": "2",
+        "timestamp": "2025-06-17 13:12:07",
+        "comment": "不同意"
+      }
+    ]
+  },
+  {
+    "id": "2010",
+    "applicantName": "张三",
+    "department": "研发部",
+    "leaveType": "年假",
+    "startDate": "2025-06-07",
+    "endDate": "2025-07-03",
+    "duration": 27,
+    "reason": "我",
+    "status": "rejected",
+    "currentApprover": "1",
+    "currentNodeId": "node_1750130305512",
+    "isApplicant": true,
+    "workflowId": "wf_1750130324694",
+    "workflowName": "6172",
+    "createdAt": "2025-06-17T05:11:17.411Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-17 13:11:17",
+        "comment": "发起申请"
+      },
+      {
+        "action": "reject",
+        "operator": "1",
+        "timestamp": "2025-06-17 13:11:23",
+        "comment": "不同意"
+      }
+    ]
+  },
+  {
+    "id": "2009",
+    "applicantName": "张三",
+    "department": "研发部",
+    "leaveType": "病假",
+    "startDate": "2025-06-02",
+    "endDate": "2025-07-16",
+    "duration": 45,
+    "reason": "1",
+    "status": "approved",
+    "currentApprover": null,
+    "currentNodeId": null,
+    "isApplicant": true,
+    "workflowId": "wf_1750130324694",
+    "workflowName": "6172",
+    "createdAt": "2025-06-17T03:58:21.734Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-17 11:58:21",
+        "comment": "发起申请"
+      },
+      {
+        "action": "approve",
+        "operator": "1",
+        "timestamp": "2025-06-17 11:58:35",
+        "comment": "同意"
+      },
+      {
+        "action": "approve",
+        "operator": "2",
+        "timestamp": "2025-06-17 11:58:42",
+        "comment": "同意"
+      }
+    ]
+  },
+  {
+    "id": "2008",
+    "applicantName": "张三",
+    "department": "研发部",
+    "leaveType": "年假",
+    "startDate": "2025-06-10",
+    "endDate": "2025-07-09",
+    "duration": 30,
+    "reason": "1",
+    "status": "approved",
+    "currentApprover": "1",
+    "isApplicant": true,
+    "workflowId": "wf_1750130324694",
+    "workflowName": "6172",
+    "createdAt": "2025-06-17T03:19:19.456Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-17 11:19:19",
+        "comment": "发起申请"
+      },
+      {
+        "action": "approve",
+        "operator": "1",
+        "timestamp": "2025-06-17 11:19:59",
+        "comment": "同意"
+      }
+    ]
+  },
+  {
+    "id": "2007",
+    "applicantName": "张三",
+    "department": "研发部",
+    "leaveType": "年假",
+    "startDate": "2025-06-04",
+    "endDate": "2025-07-08",
+    "duration": 35,
+    "reason": "1",
+    "status": "approved",
+    "currentApprover": "高级",
+    "isApplicant": true,
+    "workflowId": "wf_1750125781815",
+    "workflowName": "6171",
+    "createdAt": "2025-06-17T03:04:11.656Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-17 11:04:11",
+        "comment": "发起申请"
+      },
+      {
+        "action": "approve",
+        "operator": "高级",
+        "timestamp": "2025-06-17 11:05:08",
+        "comment": "同意"
+      }
+    ]
+  },
+  {
+    "id": "2006",
+    "applicantName": "d",
+    "department": "研发部",
+    "leaveType": "事假",
+    "startDate": "2025-06-04",
+    "endDate": "2025-07-09",
+    "duration": 36,
+    "reason": "企鹅",
+    "status": "pending",
+    "currentApprover": "d",
+    "isApplicant": true,
+    "workflowId": "wf_1750079065228",
+    "workflowName": "616",
+    "createdAt": "2025-06-17T02:02:36.953Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "d",
+        "timestamp": "2025-06-17 10:02:36",
+        "comment": "发起申请"
+      }
+    ]
+  },
+  {
+    "id": "2005",
+    "applicantName": "张三",
+    "department": "研发部",
+    "leaveType": "病假",
+    "startDate": "2025-06-04",
+    "endDate": "2025-07-09",
+    "duration": 36,
+    "reason": "1",
+    "status": "approved",
+    "currentApprover": "张三",
+    "isApplicant": true,
+    "workflowId": "wf_001",
+    "workflowName": "标准请假流程",
+    "createdAt": "2025-06-16T14:13:20.028Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-16 22:13:20",
+        "comment": "发起申请"
+      },
+      {
+        "action": "approve",
+        "operator": "张三",
+        "timestamp": "2025-06-16 22:13:25",
+        "comment": "同意"
+      }
+    ]
+  },
+  {
+    "id": "2004",
+    "applicantName": "张三",
+    "department": "研发部",
+    "leaveType": "病假",
+    "startDate": "2025-06-11",
+    "endDate": "2025-07-02",
+    "duration": 22,
+    "reason": "123",
+    "status": "pending",
+    "currentApprover": "李四 (经理)",
+    "isApplicant": true,
+    "workflowId": "wf_1750079065228",
+    "workflowName": "616",
+    "createdAt": "2025-06-16T14:06:02.409Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-16 22:06:02",
+        "comment": "发起申请"
+      }
+    ]
+  },
+  {
+    "id": "2003",
+    "applicantName": "张三",
+    "department": "研发部",
+    "leaveType": "病假",
+    "startDate": "2025-06-17",
+    "endDate": "2025-07-10",
+    "duration": 24,
+    "reason": "1",
+    "status": "pending",
+    "currentApprover": "李四 (经理)",
+    "isApplicant": true,
+    "workflowId": "wf_1750079493235",
+    "workflowName": "6162",
+    "createdAt": "2025-06-16T14:03:06.820Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-16 22:03:06",
+        "comment": "发起申请"
+      }
+    ]
+  },
+  {
+    "id": "2002",
+    "applicantName": "张三",
+    "department": "研发部",
+    "leaveType": "事假",
+    "startDate": "2025-06-16",
+    "endDate": "2025-07-30",
+    "duration": 45,
+    "reason": "132",
+    "status": "pending",
+    "currentApprover": "李四 (经理)",
+    "isApplicant": true,
+    "workflowId": "wf_1750079065228",
+    "workflowName": "616",
+    "createdAt": "2025-06-16T13:07:33.758Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-16 21:07:33",
+        "comment": "发起申请"
+      }
+    ]
+  },
+  {
+    "id": "1001",
+    "applicantName": "张三",
+    "status": "approved",
+    "workflowId": "wf_001",
+    "department": "研发部",
+    "position": "员工",
+    "leaveType": "年假",
+    "startDate": "2025-06-08",
+    "endDate": "2025-06-11",
+    "duration": 3,
+    "reason": "Bestia abduco vestrum custodia beatus vitae vergo addo.",
+    "isApplicant": true,
+    "createdAt": "2025-04-06T06:38:52.922Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-11 20:42:29",
+        "comment": "发起申请"
+      },
+      {
+        "action": "approve",
+        "operator": "部门经理",
+        "timestamp": "2025-06-12 20:42:29",
+        "comment": "同意"
+      }
+    ],
+    "workflowName": "标准请假流程"
+  },
+  {
+    "id": "1002",
+    "applicantName": "张三",
+    "status": "rejected",
+    "workflowId": "wf_001",
+    "department": "研发部",
+    "position": "员工",
+    "leaveType": "年假",
+    "startDate": "2025-06-02",
+    "endDate": "2025-06-10",
+    "duration": 4,
+    "reason": "Vilicus ad timidus quae stella dedecor artificiose.",
+    "isApplicant": true,
+    "createdAt": "2024-09-28T12:16:59.995Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-11 20:42:29",
+        "comment": "发起申请"
+      },
+      {
+        "action": "reject",
+        "operator": "部门经理",
+        "timestamp": "2025-06-12 20:42:29",
+        "comment": "项目繁忙"
+      }
+    ],
+    "workflowName": "标准请假流程"
+  },
+  {
+    "id": "1003",
+    "applicantName": "张三",
+    "status": "pending",
+    "currentApprover": "李四 (经理)",
+    "workflowId": "wf_001",
+    "department": "研发部",
+    "position": "员工",
+    "leaveType": "病假",
+    "startDate": "2025-05-31",
+    "endDate": "2025-06-09",
+    "duration": 2,
+    "reason": "Adamo veniam temeritas pecco.",
+    "isApplicant": true,
+    "createdAt": "2025-01-18T04:53:17.580Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "张三",
+        "timestamp": "2025-06-11 20:42:29",
+        "comment": "发起申请"
+      }
+    ],
+    "workflowName": "标准请假流程"
+  },
+  {
+    "id": "2001",
+    "applicantName": "李明",
+    "status": "rejected",
+    "currentApprover": null,
+    "workflowId": "wf_002",
+    "department": "研发部",
+    "position": "员工",
+    "leaveType": "事假",
+    "startDate": "2025-05-27",
+    "endDate": "2025-06-12",
+    "duration": 2,
+    "reason": "Optio arceo demitto auctor coerceo tutamen vomica repellat basium.",
+    "isApplicant": false,
+    "createdAt": "2024-07-15T15:22:47.471Z",
+    "approvalHistory": [
+      {
+        "action": "submit",
+        "operator": "李明",
+        "timestamp": "2025-06-11 20:42:29",
+        "comment": "发起申请"
+      },
+      {
+        "action": "reject",
+        "operator": "张三",
+        "timestamp": "2025-06-16 22:05:51",
+        "comment": "不同意"
+      }
+    ],
+    "workflowName": "长假审批流程"
+  }
+]

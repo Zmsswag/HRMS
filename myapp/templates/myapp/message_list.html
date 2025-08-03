@@ -1,0 +1,153 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}我的消息 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'myapp/css/message_list.css' %}">
+<style>
+    /* 为了快速看到效果，在这里添加一些简单的样式 */
+    /* 建议您将这些样式移动到 message_list.css 文件中 */
+    .container {
+        padding: 10px;
+        padding-bottom: 80px; /* 避免内容被底部导航栏遮挡 */
+    }
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* 使标题居中 */
+        padding: 15px;
+        background-color: #007bff;
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .header .back-btn {
+        color: white;
+        font-size: 1.2rem;
+        position: absolute; /* 绝对定位，不影响标题居中 */
+        left: 15px;
+    }
+    .header span {
+        flex-grow: 1; /* 占据剩余空间 */
+        text-align: center; /* 文本居中 */
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    .message-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .message-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 10px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .message-item:hover {
+        background-color: #f9f9f9;
+    }
+    .message-item.unread .message-content {
+        font-weight: bold;
+    }
+    .message-icon {
+        margin-right: 15px;
+        font-size: 1.5rem;
+        color: #007bff;
+    }
+    .message-details {
+        flex-grow: 1;
+    }
+    .message-content {
+        display: block;
+        color: #333;
+        margin-bottom: 5px;
+        /* 防止过长文本撑破布局 */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px; /* 根据屏幕宽度调整 */
+    }
+    .message-meta {
+        font-size: 0.8rem;
+        color: #888;
+    }
+    .no-messages {
+        text-align: center;
+        color: #888;
+        padding: 50px 20px;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0;
+    }
+    .pagination a, .pagination span {
+        padding: 8px 12px;
+        margin: 0 5px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        color: #007bff;
+        border-radius: 4px;
+    }
+    .pagination .active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'home' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <span>我的消息</span>
+</div>
+
+<div class="container">
+    <ul class="message-list">
+        {% for message in page_obj %}
+            <li class="message-item {% if not message.is_read %}unread{% endif %}" onclick="window.location.href='{% url 'message_detail' message.message_id %}'">
+                <div class="message-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="message-details">
+                    <span class="message-content">
+                        {{ message.content.title|default:"系统通知" }} {# 假设JSON内容中有title字段 #}
+                    </span>
+                    <div class="message-meta">
+                        <span>{{ message.msg_type|default:"通知" }}</span> · 
+                        <span>{{ message.timestamp|date:"Y-m-d H:i" }}</span>
+                    </div>
+                </div>
+            </li>
+        {% empty %}
+            <div class="no-messages">
+                <i class="fas fa-inbox fa-3x" style="margin-bottom: 15px;"></i>
+                <p>您还没有收到任何消息</p>
+            </div>
+        {% endfor %}
+    </ul>
+
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">上一页</a>
+        {% endif %}
+        
+        <span class="active">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">下一页</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

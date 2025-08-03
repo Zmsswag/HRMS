@@ -1,0 +1,75 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}创建新任务 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container { padding: 15px; max-width: 600px; margin: auto; padding-bottom: 80px; }
+    /* ... form styles from job_application_form.html ... */
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: bold; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; }
+    .btn-submit { /* ... styles from previous templates ... */ }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'task_list' %}" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+    <span>创建新任务</span>
+</div>
+
+<div class="container">
+    <form method="post" id="task-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="title">任务标题</label>
+            <input type="text" id="title" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="body">任务描述</label>
+            <textarea id="body" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="assigner">分配人</label>
+            <input type="text" name="assigner" id="assigner" class="form-control" value="{{ request.user.employee_profile.name|default:'管理员' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="start_time">开始时间</label>
+            <input type="datetime-local" name="start_time" id="start_time" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="expected_end">截止时间</label>
+            <input type="datetime-local" name="expected_end" id="expected_end" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="employees">分配给</label>
+            <select name="employee_ids" id="employees" class="form-control" multiple required>
+                {% for employee in employees %}
+                    <option value="{{ employee.employee_id }}">{{ employee.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <!-- Hidden input for JSON content -->
+        <input type="hidden" name="content" id="content-json">
+        
+        <button type="submit" class="btn-submit">创建任务</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('task-form').addEventListener('submit', function(e) {
+    const title = document.getElementById('title').value;
+    const body = document.getElementById('body').value;
+    const content = {
+        title: title,
+        body: body
+    };
+    document.getElementById('content-json').value = JSON.stringify(content);
+});
+</script>
+{% endblock %}

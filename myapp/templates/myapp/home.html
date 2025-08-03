@@ -1,0 +1,346 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}首页 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+    .stats-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 20px 0;
+    }
+    
+    .stat-card {
+        flex: 1;
+        min-width: 150px;
+        background: white;
+        color: #333;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #4361ee, #4895ef);
+    }
+    
+    .stat-card:nth-child(2)::before {
+        background: linear-gradient(90deg, #3a86ff, #00b4d8);
+    }
+    
+    .stat-card:nth-child(3)::before {
+        background: linear-gradient(90deg, #f72585, #b5179e);
+    }
+    
+    .stat-card:nth-child(4)::before {
+        background: linear-gradient(90deg, #ffbe0b, #fb8500);
+    }
+    
+    .stat-card h3 {
+        font-size: 16px;
+        margin: 0 0 15px 0;
+        color: #555;
+        font-weight: 500;
+    }
+    
+    .stat-card .number {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    
+    .stat-card .icon {
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: #4361ee;
+    }
+    
+    .stat-card:nth-child(2) .icon {
+        color: #3a86ff;
+    }
+    
+    .stat-card:nth-child(3) .icon {
+        color: #f72585;
+    }
+    
+    .stat-card:nth-child(4) .icon {
+        color: #ffbe0b;
+    }
+    
+    /* 其他现有样式保持不变 */
+    .data-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 70px;
+    }
+    
+    .card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .card-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .chart-container {
+        height: 300px;
+        padding: 15px;
+    }
+    
+    .list-container {
+        padding: 0 15px 15px;
+    }
+    
+    .list-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .list-item:last-child {
+        border-bottom: none;
+    }
+    
+    .list-item .title {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .list-item .meta {
+        font-size: 12px;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="quick-actions">
+    <a href="{% url 'employee_list' %}" class="action-item">
+        <div class="action-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <span class="action-name">员工管理</span>
+    </a>
+    <a href="{% url 'attendance_record' %}" class="action-item">
+        <div class="action-icon">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <span class="action-name">考勤管理</span>
+    </a>
+    <a href="{% url 'job_application_list' %}" class="action-item">
+        <div class="action-icon">
+            <i class="fas fa-user-plus"></i>
+        </div>
+        <span class="action-name">招聘管理</span>
+    </a>
+    <a href="{% url 'salary_list' %}" class="action-item">
+        <div class="action-icon">
+            <i class="fas fa-money-bill-wave"></i>
+        </div>
+        <span class="action-name">薪资管理</span>
+    </a>
+</div>
+
+<!-- 统计卡片 -->
+<div class="stats-cards">
+    <div class="stat-card">
+        <div class="icon"><i class="fas fa-users"></i></div>
+        <h3>在职员工</h3>
+        <div class="number">{{ employee_count }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="icon"><i class="fas fa-building"></i></div>
+        <h3>部门数量</h3>
+        <div class="number">{{ department_count }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="icon"><i class="fas fa-tasks"></i></div>
+        <h3>待完成任务</h3>
+        <div class="number">{{ task_count }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="icon"><i class="fas fa-chart-pie"></i></div>
+        <h3>任务完成率</h3>
+        <div class="number">{{ task_completion_rate }}%</div>
+    </div>
+</div>
+<div class="data-cards">
+    <div class="card">
+        <div class="card-title">
+            <span>考勤数据分析</span>
+            <i class="fas fa-ellipsis-h"></i>
+        </div>
+        <div id="attendanceChart" class="chart-container"></div>
+    </div>
+    
+    <div class="card">
+        <div class="card-title">
+            <span>部门人员分布</span>
+            <i class="fas fa-ellipsis-h"></i>
+        </div>
+        <div id="departmentChart" class="chart-container"></div>
+    </div>
+    
+    <div class="card">
+        <div class="card-title">
+            <span>最近任务</span>
+            <a href="{% url 'task_list' %}" style="color: #007bff; text-decoration: none; font-size: 14px;">
+                查看全部 <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+        <div class="list-container">
+            {% for task in recent_tasks %}
+            <div class="list-item">
+                <div class="title">{{ task.content.title|default:"任务" }}</div>
+                <div class="meta">
+                    <span><i class="fas fa-clock"></i> {{ task.assign_time|date:"Y-m-d H:i" }}</span>
+                    <span style="margin-left: 10px;"><i class="fas fa-tasks"></i> 完成度: {{ task.completion }}%</span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="list-item">暂无任务</div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-title">
+            <span>最近消息</span>
+            <a href="{% url 'message_list' %}" style="color: #007bff; text-decoration: none; font-size: 14px;">
+                查看全部 <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+        <div class="list-container">
+            {% for message in recent_messages %}
+            <div class="list-item">
+                <div class="title">{{ message.content.title|default:"通知" }}</div>
+                <div class="meta">
+                    <span><i class="fas fa-clock"></i> {{ message.timestamp|date:"Y-m-d H:i" }}</span>
+                    <span style="margin-left: 10px;">
+                        <i class="fas fa-tag"></i> {{ message.msg_type }}
+                    </span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="list-item">暂无消息</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 考勤数据分析图表
+    const attendanceChart = echarts.init(document.getElementById('attendanceChart'));
+    attendanceChart.setOption({
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        legend: {
+            bottom: '0%',
+            left: 'center',
+            itemWidth: 10,
+            itemHeight: 10,
+            textStyle: {
+                fontSize: 12
+            }
+        },
+        series: [{
+            name: '考勤情况',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+                borderRadius: 10,
+                borderColor: '#fff',
+                borderWidth: 2
+            },
+            label: {
+                show: false,
+                position: 'center'
+            },
+            emphasis: {
+                label: {
+                    show: true,
+                    fontSize: '18',
+                    fontWeight: 'bold'
+                }
+            },
+            labelLine: {
+                show: false
+            },
+            data: {{ attendance_data|safe }}
+        }]
+    });
+    
+    // 部门人员分布图表
+    const departmentChart = echarts.init(document.getElementById('departmentChart'));
+    departmentChart.setOption({
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c}人 ({d}%)'
+        },
+        legend: {
+            bottom: '0%',
+            left: 'center',
+            itemWidth: 10,
+            itemHeight: 10,
+            textStyle: {
+                fontSize: 12
+            }
+        },
+        series: [{
+            name: '部门分布',
+            type: 'pie',
+            radius: '70%',
+            center: ['50%', '45%'],
+            data: {{ department_data|safe }},
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    });
+
+    // 窗口大小改变时重置图表大小
+    window.addEventListener('resize', function() {
+        attendanceChart.resize();
+        departmentChart.resize();
+    });
+</script>
+{% endblock %}

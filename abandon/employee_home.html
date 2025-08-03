@@ -1,0 +1,17 @@
+{% extends 'myapp/base.html' %}
+{%load static%}
+
+{%block title %}员工管理 - 综合人力资源信息处理系统{%endblock%}
+{%block content%}
+    <h1>员工管理</h1>
+    <div class ="">
+        <a href="{%url 'employee_list'%}">员工列表</a>
+        <a href="{%url 'employee_add'%}">添加员工</a>
+        {% comment %} <a href="{%url 'employee_edit'%}">员工管理</a> {% endcomment %}
+    </div>
+
+
+    <div class="">
+        <a href="{%url 'department_list'%}">部门列表</a>
+    </div>
+{%endblock%}

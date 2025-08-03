@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>发布职位 - 综合人力资源信息处理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .status-bar {
+            height: 24px;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 12px;
+            align-items: center;
+        }
+
+        .header {
+            background: #1565c0;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-container {
+            padding: 15px;
+        }
+
+        .form-group {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .input-field:focus {
+            border-color: #1565c0;
+            outline: none;
+        }
+
+        textarea.input-field {
+            height: 100px;
+            resize: none;
+        }
+
+        .select-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            padding: 6px 12px;
+            background: #e3f2fd;
+            color: #1565c0;
+            border-radius: 15px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tag i {
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #1565c0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+        }
+        /* 添加浮动按钮样式 */
+        .add-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            background: #1565c0;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="header">
+        <a href="recruitment.html" style="color: white;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <span>发布职位</span>
+        <i class="fas fa-ellipsis-v"></i>
+    </div>
+
+    <div class="form-container">
+        <div class="form-group">
+            <div class="form-title">基本信息</div>
+            <div class="input-group">
+                <label class="input-label">职位名称</label>
+                <input type="text" class="input-field" placeholder="请输入职位名称">
+            </div>
+            <div class="input-group">
+                <label class="input-label">工作地点</label>
+                <select class="select-field">
+                    <option value="">请选择工作地点</option>
+                    <option value="北京">北京</option>
+                    <option value="上海">上海</option>
+                    <option value="广州">广州</option>
+                    <option value="深圳">深圳</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label class="input-label">工作经验</label>
+                <select class="select-field">
+                    <option value="">请选择工作经验要求</option>
+                    <option value="应届生">应届生</option>
+                    <option value="1-3年">1-3年</option>
+                    <option value="3-5年">3-5年</option>
+                    <option value="5-10年">5-10年</option>
+                    <option value="10年以上">10年以上</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label class="input-label">学历要求</label>
+                <select class="select-field">
+                    <option value="">请选择学历要求</option>
+                    <option value="大专">大专</option>
+                    <option value="本科">本科</option>
+                    <option value="硕士">硕士</option>
+                    <option value="博士">博士</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-title">薪资福利</div>
+            <div class="input-group">
+                <label class="input-label">薪资范围</label>
+                <select class="select-field">
+                    <option value="">请选择薪资范围</option>
+                    <option value="10k-15k">10k-15k</option>
+                    <option value="15k-20k">15k-20k</option>
+                    <option value="20k-30k">20k-30k</option>
+                    <option value="30k-50k">30k-50k</option>
+                    <option value="50k以上">50k以上</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label class="input-label">福利标签</label>
+                <input type="text" class="input-field" id="tagInput" placeholder="输入福利标签后回车">
+                <div class="tag-container" id="tagContainer">
+                    <div class="tag">
+                        五险一金 <i class="fas fa-times"></i>
+                    </div>
+                    <div class="tag">
+                        年终奖 <i class="fas fa-times"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-title">职位描述</div>
+            <div class="input-group">
+                <label class="input-label">工作职责</label>
+                <textarea class="input-field" placeholder="请输入工作职责"></textarea>
+            </div>
+            <div class="input-group">
+                <label class="input-label">任职要求</label>
+                <textarea class="input-field" placeholder="请输入任职要求"></textarea>
+            </div>
+        </div>
+
+        <button class="submit-btn">发布职位</button>
+    </div>
+
+    <!-- 添加浮动按钮 -->
+    <a href="job-post.html" class="add-btn">
+        <i class="fas fa-plus"></i>
+    </a>
+
+    <script>
+        // 标签输入功能
+        const tagInput = document.getElementById('tagInput');
+        const tagContainer = document.getElementById('tagContainer');
+
+        tagInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim()) {
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.innerHTML = `
+                    ${this.value.trim()} <i class="fas fa-times"></i>
+                `;
+                
+                // 添加删除功能
+                tag.querySelector('i').addEventListener('click', function() {
+                    tag.remove();
+                });
+
+                tagContainer.appendChild(tag);
+                this.value = '';
+            }
+        });
+
+        // 表单验证
+        const form = document.querySelector('.form-container');
+        const submitBtn = document.querySelector('.submit-btn');
+
+        form.addEventListener('input', function() {
+            const inputs = form.querySelectorAll('.input-field, .select-field');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                }
+            });
+
+            submitBtn.disabled = !isValid;
+        });
+
+        // 提交表单
+        submitBtn.addEventListener('click', function() {
+            if (!this.disabled) {
+                alert('职位发布成功！');
+                window.location.href = 'recruitment.html';
+            }
+        });
+    </script>
+</body>
+</html>

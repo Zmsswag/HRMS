@@ -1,0 +1,152 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}考勤统计 - 综合人力资源信息处理系统{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container {
+        padding: 15px;
+        padding-bottom: 80px;
+    }
+    .header {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background-color: #007bff;
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .header .back-btn {
+        color: white;
+        font-size: 1.2rem;
+    }
+    .header span {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-right: 2rem;
+    }
+    .filter-form {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .filter-form .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: flex-end;
+    }
+    .filter-form .form-group {
+        flex: 1;
+        min-width: 120px;
+    }
+    .filter-form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    .filter-form .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .filter-form .btn-submit {
+        padding: 8px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+    .stats-table thead {
+        background-color: #e9ecef;
+    }
+    .stats-table th, .stats-table td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+    }
+    .stats-table tbody tr:nth-child(odd) {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <a href="{% url 'home' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <span>考勤统计</span>
+</div>
+
+<div class="container">
+    <form method="get" class="filter-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="department-filter">部门</label>
+                <select id="department-filter" name="department" class="form-control">
+                    <option value="">所有部门</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.department_id }}" {% if department_id == dept.department_id|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="start-date">开始日期</label>
+                <input type="date" id="start-date" name="start_date" class="form-control" value="{{ start_date|date:'Y-m-d' }}">
+            </div>
+            <div class="form-group">
+                <label for="end-date">结束日期</label>
+                <input type="date" id="end-date" name="end_date" class="form-control" value="{{ end_date|date:'Y-m-d' }}">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn-submit">查询</button>
+            </div>
+        </div>
+    </form>
+
+    <div style="overflow-x: auto;"> <!-- 保证在小屏幕上可以横向滚动 -->
+        <table class="stats-table">
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>应出勤(天)</th>
+                    <th>上班打卡(次)</th>
+                    <th>下班打卡(次)</th>
+                    <th>出勤率</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in stats %}
+                <tr>
+                    <td>{{ stat.employee.name }}</td>
+                    <td>{{ stat.workdays }}</td>
+                    <td>{{ stat.in_count }}</td>
+                    <td>{{ stat.out_count }}</td>
+                    <td>{{ stat.attendance_rate }}%</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">在当前筛选条件下没有找到记录。</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>消息详情 - 综合人力资源信息处理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .status-bar {
+            height: 24px;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 12px;
+            align-items: center;
+        }
+
+        .header {
+            background: #1565c0;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+        }
+
+        .message-container {
+            background: white;
+            margin: 15px;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .message-header {
+            margin-bottom: 20px;
+        }
+
+        .message-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .message-info {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .message-content {
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .attachment-section {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .attachment-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .attachment-icon {
+            color: #1565c0;
+            margin-right: 10px;
+        }
+
+        .attachment-info {
+            flex: 1;
+        }
+
+        .attachment-name {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .attachment-size {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .primary-btn {
+            background: #1565c0;
+            color: white;
+        }
+
+        .secondary-btn {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .reply-section {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .reply-input {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            resize: none;
+            outline: none;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="header">
+        <a href="message.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <span>消息详情</span>
+        <i class="fas fa-ellipsis-v"></i>
+    </div>
+
+    <div class="message-container">
+        <div class="message-header">
+            <div class="message-title">系统更新通知</div>
+            <div class="message-info">
+                <span>系统管理员</span>
+                <span>2024-03-18 10:30</span>
+            </div>
+        </div>
+
+        <div class="message-content">
+            尊敬的用户：<br><br>
+            为了给您提供更好的服务体验，系统将于今晚22:00-23:00进行例行维护更新。在此期间，系统将暂停服务，请您提前做好相关工作安排。<br><br>
+            本次更新内容：<br>
+            1. 优化系统性能<br>
+            2. 修复已知问题<br>
+            3. 新增部分功能<br><br>
+            如有疑问，请联系系统管理员。
+        </div>
+
+        <div class="attachment-section">
+            <div class="attachment-title">附件</div>
+            <a href="#" class="attachment-item">
+                <i class="fas fa-file-pdf attachment-icon"></i>
+                <div class="attachment-info">
+                    <div class="attachment-name">系统更新说明.pdf</div>
+                    <div class="attachment-size">1.2MB</div>
+                </div>
+                <i class="fas fa-download"></i>
+            </a>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn secondary-btn">
+                <i class="fas fa-share"></i>
+                <span>转发</span>
+            </button>
+            <button class="action-btn primary-btn">
+                <i class="fas fa-check"></i>
+                <span>已读</span>
+            </button>
+        </div>
+
+        <div class="reply-section">
+            <textarea class="reply-input" placeholder="请输入回复内容..."></textarea>
+            <div class="action-buttons">
+                <button class="action-btn primary-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>发送回复</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>登录 - 综合人力资源信息处理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'myapp/css/login.css' %}">
+
+</head>
+<body>
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="login-container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-users-gear"></i>
+            </div>
+            <h1 class="title">综合人力资源信息处理系统</h1>
+            <p class="subtitle">请登录您的账号</p>
+        </div>
+
+        <!-- 确保表单正确提交到登录URL -->
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <!-- 如果有next参数，将其包含在表单中 -->
+            {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+            
+            <!-- 账号输入框 -->
+            <div class="input-group">
+                <input type="text" name="account" placeholder="账号" required>
+                <i class="fas fa-user"></i>
+            </div>
+            
+            <!-- 密码输入框 -->
+            <div class="input-group">
+                <input type="password" name="password" placeholder="密码" required>
+                <i class="fas fa-lock"></i>
+            </div>
+            
+            <!-- 登录按钮 -->
+            <button type="submit">登录</button>
+        </form>
+
+        <div class="footer">
+            <p>任何问题请联系qq:192372057</p>
+        </div>
+    </div>
+
+    <script>
+        // 自动隐藏消息
+        document.addEventListener('DOMContentLoaded', function() {
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.opacity = '0';
+                    message.style.transform = 'translateY(-20px)';
+                    message.style.transition = 'all 0.5s ease';
+                    setTimeout(function() {
+                        message.remove();
+                    }, 500);
+                }, 3000);
+            });
+            
+            // 输入框焦点效果
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(function(input) {
+                input.addEventListener('focus', function() {
+                    this.parentElement.querySelector('i').style.color = 'var(--primary-color)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentElement.querySelector('i').style.color = '#aaa';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

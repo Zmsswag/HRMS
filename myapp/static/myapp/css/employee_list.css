@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding-bottom: 0; /* 移除底部内边距 */
+}
+
+.header {
+    background: #1565c0;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header a {
+    text-decoration: none;
+}
+
+.header span {
+    font-size: 16px;
+    flex: 1;
+    text-align: center;
+}
+
+.status-bar {
+    height: 24px;
+    background-color: #000000;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 12px;
+    align-items: center;
+}
+
+.back-btn {
+    color: white;
+    text-decoration: none;
+}
+
+.search-bar {
+    background: white;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-input {
+    flex: 1;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    outline: none;
+}
+
+.filter-btn {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 16px;
+}
+
+.employee-list {
+    margin-top: 20px;
+    padding: 15px;
+}
+
+.employee-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background: #e3f2fd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #1565c0;
+}
+
+.employee-info {
+    flex: 1;
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.employee-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.employee-position {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.employee-department {
+    font-size: 12px;
+    color: #999;
+}
+
+.action-btn {
+    color: #666;
+}
+
+.filter-panel {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.filter-item {
+    margin-bottom: 10px;
+}
+
+.filter-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-link {
+    padding: 8px 12px;
+    margin: 0 5px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+}
+
+.page-link.active {
+    background: #007bff;
+    color: #fff;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.status-employed {
+    background: #28a745;
+    color: white;
+}
+
+.status-not-employed {
+    background: #dc3545;
+    color: white;
+}

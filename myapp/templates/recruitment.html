@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>招聘管理 - 综合人力资源信息处理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding-bottom: 60px;
+        }
+
+        .status-bar {
+            height: 24px;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 12px;
+            align-items: center;
+        }
+
+        .header {
+            background: #1565c0;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            color: #666;
+            position: relative;
+        }
+
+        .tab.active {
+            color: #1565c0;
+            font-weight: bold;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #1565c0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 15px;
+        }
+
+        .stat-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1565c0;
+            margin: 5px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .job-list {
+            margin: 15px;
+        }
+
+        .job-item {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .job-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .job-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-closed {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .job-info {
+            display: flex;
+            gap: 15px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .job-progress {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .progress-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .progress-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        .progress-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .add-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            background: #1565c0;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .nav-item.active {
+            color: #1565c0;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="header">
+        <a href="home.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <span>招聘管理</span>
+        <i class="fas fa-ellipsis-v"></i>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="positions">在招职位</div>
+        <div class="tab" data-tab="candidates">候选人</div>
+        <div class="tab" data-tab="interviews">面试安排</div>
+    </div>
+
+    <div id="positions" class="tab-content active">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">8</div>
+                <div class="stat-label">在招职位</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">126</div>
+                <div class="stat-label">收到简历</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">45</div>
+                <div class="stat-label">面试中</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">12</div>
+                <div class="stat-label">已入职</div>
+            </div>
+        </div>
+        <div class="job-list">
+            <div class="job-item">
+                <div class="job-header">
+                    <div class="job-title">高级前端开发工程师</div>
+                    <span class="job-status status-active">招聘中</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-money-bill-wave"></i> 15-25K</span>
+                    <span><i class="fas fa-map-marker-alt"></i> 深圳</span>
+                    <span><i class="fas fa-briefcase"></i> 3-5年</span>
+                </div>
+                <div class="job-progress">
+                    <div class="progress-item">
+                        <div class="progress-value">28</div>
+                        <div class="progress-label">简历投递</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value">12</div>
+                        <div class="progress-label">面试中</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value">3</div>
+                        <div class="progress-label">已录用</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-item">
+                <div class="job-header">
+                    <div class="job-title">产品经理</div>
+                    <span class="job-status status-active">招聘中</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-money-bill-wave"></i> 20-35K</span>
+                    <span><i class="fas fa-map-marker-alt"></i> 深圳</span>
+                    <span><i class="fas fa-briefcase"></i> 5-8年</span>
+                </div>
+                <div class="job-progress">
+                    <div class="progress-item">
+                        <div class="progress-value">35</div>
+                        <div class="progress-label">简历投递</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value">15</div>
+                        <div class="progress-label">面试中</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value">2</div>
+                        <div class="progress-label">已录用</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="job-post.html" class="add-btn">
+            <i class="fas fa-plus"></i>
+        </a>
+    </div>
+
+    <div id="candidates" class="tab-content">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">56</div>
+                <div class="stat-label">总简历数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">35</div>
+                <div class="stat-label">初筛通过</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">15</div>
+                <div class="stat-label">面试通过</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">8</div>
+                <div class="stat-label">已发offer</div>
+            </div>
+        </div>
+        <div class="job-list">
+            <div class="job-item">
+                <div class="job-header">
+                    <div class="job-title">张小明</div>
+                    <span class="job-status status-active">待面试</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-briefcase"></i> 高级前端开发工程师</span>
+                    <span><i class="fas fa-graduation-cap"></i> 本科</span>
+                    <span><i class="fas fa-clock"></i> 4年经验</span>
+                </div>
+            </div>
+            <div class="job-item">
+                <div class="job-header">
+                    <div class="job-title">李华</div>
+                    <span class="job-status status-active">初筛通过</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-briefcase"></i> 产品经理</span>
+                    <span><i class="fas fa-graduation-cap"></i> 硕士</span>
+                    <span><i class="fas fa-clock"></i> 6年经验</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="interviews" class="tab-content">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">12</div>
+                <div class="stat-label">今日面试</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">8</div>
+                <div class="stat-label">明日面试</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">25</div>
+                <div class="stat-label">本周面试</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">42</div>
+                <div class="stat-label">本月面试</div>
+            </div>
+        </div>
+        <div class="job-list">
+            <div class="job-item">
+                <div class="job-header">
+                    <div class="job-title">今日 14:30</div>
+                    <span class="job-status status-active">待面试</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-user"></i> 张小明</span>
+                    <span><i class="fas fa-briefcase"></i> 高级前端开发工程师</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-map-marker-alt"></i> 线上面试</span>
+                    <span><i class="fas fa-user-tie"></i> 面试官：王经理</span>
+                </div>
+            </div>
+            <div class="job-item">
+                <div class="job-header">
+                    <div class="job-title">今日 16:00</div>
+                    <span class="job-status status-active">待面试</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-user"></i> 李华</span>
+                    <span><i class="fas fa-briefcase"></i> 产品经理</span>
+                </div>
+                <div class="job-info">
+                    <span><i class="fas fa-map-marker-alt"></i> 会议室A</span>
+                    <span><i class="fas fa-user-tie"></i> 面试官：张总</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+
+    <script>
+        // 标签页切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 更新标签页状态
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // 更新内容区域
+                const tabId = tab.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+[
+  {
+    "name": "未命名工作流",
+    "description": "",
+    "version": "1.0",
+    "is_active": true,
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    },
+    "id": "wf_1750067890692",
+    "created_at": "2025-06-16T09:58:10.692Z",
+    "updated_at": "2025-06-16T09:58:10.692Z"
+  },
+  {
+    "name": "未命名工作流",
+    "description": "",
+    "version": "1.0",
+    "is_active": true,
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    },
+    "id": "wf_1750067726397",
+    "created_at": "2025-06-16T09:55:26.397Z",
+    "updated_at": "2025-06-16T09:55:26.397Z"
+  },
+  {
+    "name": "未命名工作流",
+    "description": "",
+    "version": "1.0",
+    "is_active": true,
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    },
+    "id": "wf_1750067514929",
+    "created_at": "2025-06-16T09:51:54.929Z",
+    "updated_at": "2025-06-16T09:51:54.929Z"
+  },
+  {
+    "name": "未命名工作流",
+    "description": "",
+    "version": "1.0",
+    "is_active": true,
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    },
+    "id": "wf_1750067491410",
+    "created_at": "2025-06-16T09:51:31.410Z",
+    "updated_at": "2025-06-16T09:51:31.410Z"
+  },
+  {
+    "name": "未命名工作流",
+    "description": "",
+    "version": "1.0",
+    "is_active": true,
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    },
+    "id": "wf_1750067474219",
+    "created_at": "2025-06-16T09:51:14.219Z",
+    "updated_at": "2025-06-16T09:51:14.219Z"
+  },
+  {
+    "name": "未命名工作流",
+    "description": "",
+    "version": "1.0",
+    "is_active": true,
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    },
+    "id": "wf_1750067220837",
+    "created_at": "2025-06-16T09:47:00.837Z",
+    "updated_at": "2025-06-16T09:47:00.837Z"
+  },
+  {
+    "name": "未命名工作流",
+    "description": "",
+    "version": "1.0",
+    "is_active": true,
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    },
+    "id": "wf_1750067161957",
+    "created_at": "2025-06-16T09:46:01.957Z",
+    "updated_at": "2025-06-16T09:46:01.957Z"
+  },
+  {
+    "name": "未命名工作流",
+    "description": "",
+    "version": "1.0",
+    "is_active": true,
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    },
+    "id": "wf_1750067074084",
+    "created_at": "2025-06-16T09:44:34.084Z",
+    "updated_at": "2025-06-16T09:44:34.084Z"
+  },
+  {
+    "id": "wf_001",
+    "name": "标准请假流程",
+    "description": "适用于3天以内的请假。",
+    "version": "1.0",
+    "is_active": true,
+    "created_at": "2023-10-01T10:00:00Z",
+    "updated_at": "2023-10-01T10:00:00Z",
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    }
+  },
+  {
+    "id": "wf_002",
+    "name": "长假审批流程",
+    "description": "需要部门经理和HR双重审批。",
+    "version": "1.2",
+    "is_active": true,
+    "created_at": "2023-09-15T14:30:00Z",
+    "updated_at": "2023-10-05T11:00:00Z",
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    }
+  },
+  {
+    "id": "wf_dev_01",
+    "name": "研发部快速通道(测试)",
+    "description": "研发部门内部测试用流程。",
+    "version": "0.5",
+    "is_active": false,
+    "created_at": "2023-11-01T16:00:00Z",
+    "updated_at": "2023-11-01T16:00:00Z",
+    "definition_json": {
+      "nodes": [],
+      "edges": []
+    }
+  }
+]

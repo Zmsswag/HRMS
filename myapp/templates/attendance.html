@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>考勤管理 - 综合人力资源信息处理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding-bottom: 60px;
+        }
+
+        .status-bar {
+            height: 24px;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 12px;
+            align-items: center;
+        }
+
+        .header {
+            background: #1565c0;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header a {
+            text-decoration: none;
+        }
+
+        .header span {
+            font-size: 16px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .clock-card {
+            background: white;
+            margin: 15px;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .current-time {
+            font-size: 40px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #1565c0;
+        }
+
+        .current-date {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .clock-btn {
+            background: #1565c0;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 40px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .clock-btn.disabled {
+            background: #ccc;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px;
+        }
+
+        .stat-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1565c0;
+            margin: 5px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .record-list {
+            margin: 15px;
+        }
+
+        .record-item {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 15px;
+        }
+
+        .record-date {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .record-detail {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .record-status {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .status-normal {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-late {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-early {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .nav-item.active {
+            color: #1565c0;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #1565c0;
+            font-size: 13px;
+        }
+
+        .action-btn i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <!-- 修改 header 部分 -->
+    <div class="header">
+        <a href="home.html" style="color: white;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <span>考勤管理</span>
+        <i class="fas fa-ellipsis-v"></i>
+    </div>
+
+    <div class="clock-card">
+        <div class="current-time" id="currentTime">08:30:25</div>
+        <div class="current-date" id="currentDate">2024年3月18日 星期一</div>
+        <div>上班时间 09:00 - 18:00</div>
+        <button class="clock-btn" id="clockBtn">上班打卡</button>
+    </div>
+
+    <!-- 删除原有的 action-buttons 部分 -->
+
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-value">22</div>
+            <div class="stat-label">本月出勤天数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">1</div>
+            <div class="stat-label">本月迟到次数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">0</div>
+            <div class="stat-label">本月早退次数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">1</div>
+            <div class="stat-label">本月请假天数</div>
+        </div>
+    </div>
+
+    <div class="record-list">
+        <div class="record-item">
+            <div class="record-date">2024-03-25 今天</div>
+        </div>
+
+        <div class="record-item">
+            <div class="record-date">2024-03-17 星期日</div>
+            <div class="record-detail">
+                <span>上班打卡</span>
+                <span>09:15:30</span>
+                <span class="record-status status-late">迟到</span>
+            </div>
+            <div class="record-detail">
+                <span>下班打卡</span>
+                <span>18:05:12</span>
+                <span class="record-status status-normal">正常</span>
+            </div>
+        </div>
+
+        <div class="record-item">
+            <div class="record-date">2024-03-16 星期六</div>
+            <div class="record-detail">
+                <span>上班打卡</span>
+                <span>08:55:42</span>
+                <span class="record-status status-normal">正常</span>
+            </div>
+            <div class="record-detail">
+                <span>下班打卡</span>
+                <span>17:30:15</span>
+                <span class="record-status status-early">早退</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除底部导航栏 -->
+    <style>
+        /* 移除底部内边距 */
+        body {
+            padding-bottom: 0;
+        }
+        
+        /* 删除 .bottom-nav 相关样式 */
+    </style>
+</body>
+</html>
+
+    <script>
+        // 更新时间显示
+        function updateTime() {
+            const now = new Date();
+            const timeElement = document.getElementById('currentTime');
+            const dateElement = document.getElementById('currentDate');
+            const clockBtn = document.getElementById('clockBtn');
+            
+            // 更新时间
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // 更新日期
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const date = String(now.getDate()).padStart(2, '0');
+            const weekday = weekdays[now.getDay()];
+            dateElement.textContent = `${year}年${month}月${date}日 ${weekday}`;
+        }
+
+        // 每秒更新时间
+        setInterval(updateTime, 1000);
+        updateTime(); // 立即更新一次
+
+        // 打卡按钮点击事件
+        let isClockIn = true; // true表示上班打卡，false表示下班打卡
+        const clockBtn = document.getElementById('clockBtn');
+        
+        clockBtn.addEventListener('click', function() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const currentTime = `${hours}:${minutes}:${seconds}`;
+            
+            // 获取今天的记录项
+            let todayRecord = document.querySelector('.record-item:first-child');
+            
+            if (isClockIn) {
+                // 上班打卡
+                let status = 'normal';
+                if (hours >= 9) {
+                    status = 'late';
+                }
+                
+                // 更新按钮文本
+                clockBtn.textContent = '下班打卡';
+                
+                // 添加打卡记录
+                const recordDetail = document.createElement('div');
+                recordDetail.className = 'record-detail';
+                recordDetail.innerHTML = `
+                    <span>上班打卡</span>
+                    <span>${currentTime}</span>
+                    <span class="record-status ${status === 'late' ? 'status-late' : 'status-normal'}">
+                        ${status === 'late' ? '迟到' : '正常'}
+                    </span>
+                `;
+                todayRecord.appendChild(recordDetail);
+            } else {
+                // 下班打卡
+                let status = 'normal';
+                if (hours < 18) {
+                    status = 'early';
+                }
+                
+                // 更新按钮文本
+                clockBtn.textContent = '已打卡';
+                clockBtn.disabled = true;
+                clockBtn.classList.add('disabled');
+                
+                // 添加打卡记录
+                const recordDetail = document.createElement('div');
+                recordDetail.className = 'record-detail';
+                recordDetail.innerHTML = `
+                    <span>下班打卡</span>
+                    <span>${currentTime}</span>
+                    <span class="record-status ${status === 'early' ? 'status-early' : 'status-normal'}">
+                        ${status === 'early' ? '早退' : '正常'}
+                    </span>
+                `;
+                todayRecord.appendChild(recordDetail);
+            }
+            
+            isClockIn = !isClockIn;
+        });
+    </script>

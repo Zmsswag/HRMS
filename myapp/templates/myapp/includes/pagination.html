@@ -1,0 +1,74 @@
+{% comment %}
+  这是一个可复用的分页组件。
+  使用方法: {% include 'myapp/includes/pagination.html' with page_obj=page_obj %}
+  它会自动保留当前URL中的所有GET参数（除了'page'本身）。
+{% endcomment %}
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    
+    {# 上一页按钮 #}
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
+            « 上一页
+        </a>
+    {% else %}
+        {# 如果没有上一页，可以显示一个禁用的按钮 #}
+        <span class="page-link disabled">« 上一页</span>
+    {% endif %}
+
+    {# 当前页码信息 #}
+    <span class="page-link active">
+        第 {{ page_obj.number }} 页 / 共 {{ page_obj.paginator.num_pages }} 页
+    </span>
+
+    {# 下一页按钮 #}
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link">
+            下一页 »
+        </a>
+    {% else %}
+        {# 如果没有下一页，可以显示一个禁用的按钮 #}
+        <span class="page-link disabled">下一页 »</span>
+    {% endif %}
+
+</div>
+{% endif %}
+
+{# 以下是这个组件依赖的CSS样式，您可以将它放到一个公共的CSS文件中 #}
+{% comment %}
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 0;
+        list-style: none;
+        user-select: none;
+    }
+    .page-link {
+        padding: 8px 12px;
+        margin: 0 5px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        color: #007bff;
+        border-radius: 4px;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .page-link:hover {
+        background-color: #f0f0f0;
+    }
+    .page-link.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+        cursor: default;
+    }
+    .page-link.disabled {
+        color: #6c757d;
+        pointer-events: none;
+        background-color: #e9ecef;
+        border-color: #ddd;
+    }
+</style>
+{% endcomment %}
